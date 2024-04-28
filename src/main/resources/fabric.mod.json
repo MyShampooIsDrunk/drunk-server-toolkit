@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "server_creations_lib",
+	"version": "${version}",
+	"name": "server_creations_lib",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/weapons_api/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"myshampooisdrunk.server_creations_lib.WeaponAPI"
+		],
+		"fabric-datagen": [
+			"myshampooisdrunk.server_creations_lib.WeaponAPIDataGenerator"
+		]
+	},
+	"mixins": [
+      "drunk_server_toolkit.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.6",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

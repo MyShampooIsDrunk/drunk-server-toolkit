@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "myshampooisdrunk.drunk_server_toolkit.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AnvilScreenHandlerMixin",
+    "EnchantmentHelperMixin",
+    "EntityMixin",
+    "ItemMixin",
+    "ItemStackMixin",
+    "PlayerAdvancementTrackerMixin",
+    "PlayerEntityMixin",
+    "PlayerEntityMixin_customCooldowns"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}
