@@ -2,7 +2,9 @@ package myshampooisdrunk.drunk_server_toolkit.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentHelper;
+import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentInstance;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
@@ -14,8 +16,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
@@ -53,4 +58,14 @@ public class EnchantmentHelperMixin {
             CustomEnchantmentHelper.forEachCustomEnchantment(consumer, user.getMainHandStack());
         }
     }
+    @Redirect(at=@At(value = "INVOKE",target = "Lnet/minecraft/enchantment/EnchantmentHelper;getPossibleEntries(ILnet/minecraft/item/ItemStack;Z)Ljava/util/List;"), method = "generateEnchantments")
+    private static List<EnchantmentLevelEntry> generateEnchantsIncludingCustomOnes(int power, ItemStack stack, boolean treasureAllowed){
+        List<EnchantmentLevelEntry> original = EnchantmentHelper.getPossibleEntries(power,stack,treasureAllowed);
+        List<CustomEnchantmentInstance> newEnch = CustomEnchantmentHelper.getPossibleEntries(power, stack, treasureAllowed);
+        for(CustomEnchantmentInstance i : newEnch){
+            //original.add(new EnchantmentLevelEntry(null, ))
+        }
+        return null;
+    }
 }
+

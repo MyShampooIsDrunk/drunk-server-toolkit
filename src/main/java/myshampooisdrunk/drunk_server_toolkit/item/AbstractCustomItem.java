@@ -1,4 +1,4 @@
-package myshampooisdrunk.drunk_server_toolkit.weapon;
+package myshampooisdrunk.drunk_server_toolkit.item;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import net.minecraft.entity.Entity;
@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -21,6 +22,12 @@ public abstract class AbstractCustomItem{
     protected final Item item;
     protected final int id;
     protected final Identifier identifier;
+    public AbstractCustomItem(Item item, String path,Logger logger, String name){
+        this(item, new Identifier(logger.getName(), path), name);
+    }
+    public AbstractCustomItem(Item item, String path,Logger logger){
+        this(item, new Identifier(logger.getName(), path));
+    }
     public AbstractCustomItem(Item item, Identifier identifier) {
         this(item,identifier,null);
     }

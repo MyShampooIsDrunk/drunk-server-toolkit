@@ -1,7 +1,8 @@
 package myshampooisdrunk.drunk_server_toolkit.example;
 
+import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomItemCooldownManagerI;
-import myshampooisdrunk.drunk_server_toolkit.weapon.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
@@ -10,7 +11,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class GoofySillyGoofyItem extends AbstractCustomItem {
     public GoofySillyGoofyItem() {
-        super(Items.BONE,new Identifier("shampoos_weapons_api","goofy_silly_goofy_item"),"if.this.works.i.will.cry.tears.of.joy");
+        super(Items.BONE,"goofy_silly_goofy_item", WeaponAPI.LOGGER,"if.this.works.i.will.cry.tears.of.joy");
     }
 
     @Override

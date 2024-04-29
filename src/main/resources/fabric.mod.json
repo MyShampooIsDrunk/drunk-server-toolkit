@@ -1,25 +1,25 @@
 {
 	"schemaVersion": 1,
-	"id": "server_creations_lib",
+	"id": "drunk_server_toolkit",
 	"version": "${version}",
-	"name": "server_creations_lib",
+	"name": "drunk_server_toolkit",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/MyShampooIsDrunk/drunk-server-toolkit"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/weapons_api/icon.png",
+	"icon": "assets/drunk_server_toolkit/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"myshampooisdrunk.server_creations_lib.WeaponAPI"
+			"myshampooisdrunk.drunk_server_toolkit.WeaponAPI"
 		],
 		"fabric-datagen": [
-			"myshampooisdrunk.server_creations_lib.WeaponAPIDataGenerator"
+			"myshampooisdrunk.drunk_server_toolkit.WeaponAPIDataGenerator"
 		]
 	},
 	"mixins": [

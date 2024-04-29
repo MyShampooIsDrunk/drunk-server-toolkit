@@ -2,7 +2,7 @@ package myshampooisdrunk.drunk_server_toolkit.mixin;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentHelper;
-import myshampooisdrunk.drunk_server_toolkit.weapon.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,16 +31,5 @@ public abstract class ItemMixin{
 			}
 		}
 	}
-
-//	@Inject(method="hasGlint",at=@At("TAIL"), cancellable = true)//head or tail doesnt matter cuz its a 1-line method
-//	private void modifyHasGlint(ItemStack stack, CallbackInfoReturnable<Boolean> cir){
-//		cir.setReturnValue(cir.getReturnValueZ() || CustomEnchantmentHelper.hasEnchantments(stack));
-//	}
-//	@Inject(method="appendTooltip",at=@At("TAIL"))
-//	public void appendCustomTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context, CallbackInfo ci){
-//		System.out.println(stack + "SILLY SHIT 33: " + stack.getNbt());
-//		System.out.println("SILLY SHIT: "+ stack.getSubNbt(CustomEnchantmentHelper.CUSTOM_ENCHANT_KEY));
-//		CustomEnchantmentHelper.appendCustomEnchantments(tooltip, CustomEnchantmentHelper.getEnchantments(stack));
-//	}
 
 }

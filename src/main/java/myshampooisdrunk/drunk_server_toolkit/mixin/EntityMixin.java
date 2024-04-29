@@ -2,7 +2,7 @@ package myshampooisdrunk.drunk_server_toolkit.mixin;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentHelper;
-import myshampooisdrunk.drunk_server_toolkit.weapon.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

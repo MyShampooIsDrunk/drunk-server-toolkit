@@ -7,7 +7,6 @@
     "EnchantmentHelperMixin",
     "EntityMixin",
     "ItemMixin",
-    "ItemStackMixin",
     "PlayerAdvancementTrackerMixin",
     "PlayerEntityMixin",
     "PlayerEntityMixin_customCooldowns"

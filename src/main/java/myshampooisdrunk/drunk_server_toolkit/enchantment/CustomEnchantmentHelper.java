@@ -361,12 +361,6 @@ public class CustomEnchantmentHelper {
     public static Map<AbstractCustomEnchantment,Integer> getEnchantmentList(ItemStack item){
         return CustomEnchantmentHelper.fromNbt(getEnchantments(item));
     }
-    public static void appendTooltipItem(ItemStack stack, List<Text> tooltip){
-        appendCustomEnchantments(tooltip,getEnchantments(stack));
-    }
-    public static void appendTooltipBook(ItemStack stack, List<Text> tooltip){
-        appendCustomEnchantments(tooltip,getEnchantmentNbt(stack));
-    }
     @FunctionalInterface
     public interface Consumer {
         public void accept(AbstractCustomEnchantment var1, int var2);
@@ -390,8 +384,6 @@ public class CustomEnchantmentHelper {
         if(book1 && book2){
             Map<AbstractCustomEnchantment,Integer> ench1 = get(stack1);
             Map<AbstractCustomEnchantment,Integer> ench2 = get(stack2);
-//            System.out.println("ench1 book enchants: " + ench1);
-//            System.out.println("ench2 book enchants: " + ench2);
             for(AbstractCustomEnchantment ench : ench1.keySet()) {
                 if (ench2.containsKey(ench)) {
                     if (ench1.get(ench).equals(ench2.get(ench))) {
@@ -414,14 +406,11 @@ public class CustomEnchantmentHelper {
             }
 
         }
-        //System.out.println("finalSTored: " + finalStoredEnch);
         blacklist.clear();
         boolean bool = stack1.isOf(stack2.getItem()) && !stack2.isOf(Items.ENCHANTED_BOOK);//if same item
         if(bool){
             Map<AbstractCustomEnchantment,Integer> ench1 = fromNbt(getEnchantments(stack1));
             Map<AbstractCustomEnchantment,Integer> ench2 = fromNbt(getEnchantments(stack2));
-            //System.out.println("ench1 item: " + ench1);
-            //System.out.println("ench2 item: " + ench2);
             for(AbstractCustomEnchantment ench : ench1.keySet()) {
                 if (ench2.containsKey(ench)) {
                     if (ench1.get(ench).equals(ench2.get(ench))) {
@@ -447,8 +436,6 @@ public class CustomEnchantmentHelper {
         if(book2 && !stack1.isOf(Items.ENCHANTED_BOOK)){
             Map<AbstractCustomEnchantment,Integer> ench1 = fromNbt(getEnchantments(stack1));
             Map<AbstractCustomEnchantment,Integer> ench2 = get(stack2);
-            //System.out.println("ench1 item: " + ench1);
-            //System.out.println("ench2 item: " + ench2);
             for(AbstractCustomEnchantment ench : ench1.keySet()) {
                 if (ench2.containsKey(ench)) {
                     if (ench1.get(ench).equals(ench2.get(ench))) {
@@ -470,7 +457,6 @@ public class CustomEnchantmentHelper {
                 if(!blacklist.contains(ench) && !finalEnch.containsKey(ench))finalEnch.put(ench,ench2.get(ench));
             }
         }
-        //System.out.println("finalEnch: " + finalEnch);
         if(!finalEnch.isEmpty())set(finalEnch,ret);
         if(!finalStoredEnch.isEmpty())
             for(Map.Entry<AbstractCustomEnchantment,Integer> i : finalStoredEnch.entrySet()){
@@ -509,21 +495,6 @@ public class CustomEnchantmentHelper {
         }
     }
 
-    public static NbtString getTooltip(CustomEnchantmentInstance instance){
-        return NbtString.of(instance.toString());
-    }
-    public static void updateItemTooltip(ItemStack item){
-        Map<AbstractCustomEnchantment, Integer> ench = get(item);
-        NbtList lore = getEnchantText(getEnchantments(item));
-        if(lore==null)return;
-        NbtList nbtList = getLoreForMerge(item, !lore.isEmpty());
-
-        if (nbtList != null) {
-            nbtList.addAll(lore);
-            //lore.stream().map(text->((MutableText)text).setStyle(Style.EMPTY.withItalic(false))).map(Text.Serialization::toJsonString).map(NbtString::of).forEach(nbtList::add);
-        }
-        item.setSubNbt(ItemStack.LORE_KEY,nbtList!=null?nbtList:lore);
-    }
     private static NbtList getLoreForMerge(ItemStack stack, boolean otherLoreExists) {
         NbtCompound nbtCompound2;
         NbtCompound nbtCompound;
@@ -606,4 +577,3 @@ public class CustomEnchantmentHelper {
         item.setSubNbt(ItemStack.DISPLAY_KEY,nbtCompound);
     }
 }
-//custom bow item/enchantments, custom tool item/enchantments, ench table compat, grindstone

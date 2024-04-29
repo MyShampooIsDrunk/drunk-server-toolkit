@@ -4,7 +4,7 @@ import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.AbstractCustomEnchantment;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentHelper;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentInstance;
-import myshampooisdrunk.drunk_server_toolkit.weapon.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
 import net.minecraft.recipe.*;
