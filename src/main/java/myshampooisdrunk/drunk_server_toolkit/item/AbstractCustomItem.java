@@ -40,7 +40,7 @@ public abstract class AbstractCustomItem{
         }
 
     }
-    private AbstractCustomItem(Item item, Identifier identifier, int id, String itemName) {
+    protected AbstractCustomItem(Item item, Identifier identifier, int id, String itemName) {
         this.identifier=identifier;
         this.key=itemName;
         this.item = item;

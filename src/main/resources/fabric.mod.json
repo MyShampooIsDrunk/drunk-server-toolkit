@@ -22,6 +22,7 @@
 			"myshampooisdrunk.drunk_server_toolkit.WeaponAPIDataGenerator"
 		]
 	},
+	"accessWidener" : "drunk_server_toolkit.accesswidener",
 	"mixins": [
       "drunk_server_toolkit.mixins.json"
 	],

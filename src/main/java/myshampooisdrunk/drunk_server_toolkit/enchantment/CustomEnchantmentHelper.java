@@ -3,6 +3,9 @@ package myshampooisdrunk.drunk_server_toolkit.enchantment;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
@@ -19,7 +22,9 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.Util;
+import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
@@ -28,6 +33,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.launch.platform.container.IContainerHandle;
 
+import java.awt.event.WindowEvent;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -239,9 +245,6 @@ public class CustomEnchantmentHelper {
     }
     public static int getEquipmentLevel(AbstractCustomEnchantment enchantment, LivingEntity entity) {
         Collection<ItemStack> iterable = enchantment.getEquipment(entity).values();
-        if (iterable == null) {
-            return 0;
-        }
         int i = 0;
         for (ItemStack itemStack : iterable) {
             int j = getLevel(enchantment, itemStack);
@@ -325,6 +328,51 @@ public class CustomEnchantmentHelper {
         }
         return list;
     }
+    public static Pair<List<CustomEnchantmentInstance>,List<EnchantmentLevelEntry>> generate(Random random, ItemStack stack, int level, boolean treasureAllowed){
+        ArrayList<CustomEnchantmentInstance> custom = Lists.newArrayList();
+        ArrayList<EnchantmentLevelEntry> ench = Lists.newArrayList();
+        Pair<List<CustomEnchantmentInstance>,List<EnchantmentLevelEntry>> ret = new Pair<>(custom,ench);
+        Item item = stack.getItem();
+        int i = item.getEnchantability();
+        if (i <= 0) {
+            return ret;
+        }
+        level += 1 + random.nextInt(i / 4 + 1) + random.nextInt(i / 4 + 1);
+        float f = (random.nextFloat() + random.nextFloat() - 1.0f) * 0.15f;
+        List<EnchantmentLevelEntry> possEnch = EnchantmentHelper.getPossibleEntries(level = MathHelper.clamp(Math.round((float)level + (float)level * f), 1, Integer.MAX_VALUE), stack, treasureAllowed);
+        List<CustomEnchantmentInstance> possCustom = getPossibleEntries(level = MathHelper.clamp(Math.round((float)level + (float)level * f), 1, Integer.MAX_VALUE), stack, treasureAllowed);
+        List<Pair<CustomEnchantmentInstance,EnchantmentLevelEntry>> pairs = Lists.newArrayList();
+        System.out.println("possCustom: " + possCustom);
+        for(EnchantmentLevelEntry inst : possEnch){
+            pairs.add(new Pair<>(null,inst));
+        }
+        for(CustomEnchantmentInstance inst : possCustom){
+            pairs.add(new Pair<>(inst,null));
+        }
+        if (!pairs.isEmpty()){
+            Optional<Pair<CustomEnchantmentInstance,EnchantmentLevelEntry>> rand = getRandomPair(random, pairs);
+            if(rand.isPresent()){
+
+                if(rand.get().getLeft() != null){
+                    custom.add(rand.get().getLeft());
+                }
+                if(rand.get().getRight() != null){
+                    ench.add(rand.get().getRight());
+                }
+            }
+            while (random.nextInt(50) <= level) {
+                if (!custom.isEmpty()) removeConflicts(possCustom, Util.getLast(custom));
+                if (!ench.isEmpty()) EnchantmentHelper.removeConflicts(possEnch,Util.getLast(ench));
+                if (possCustom.isEmpty() && possEnch.isEmpty()) break;
+
+                level /= 2;
+            }
+        }
+        ret = new Pair<>(custom,ench);
+        return ret;
+    }
+
+
     public static void removeConflicts(List<CustomEnchantmentInstance> possibleEntries, CustomEnchantmentInstance pickedEntry) {
         Iterator<CustomEnchantmentInstance> iterator = possibleEntries.iterator();
         while (iterator.hasNext()) {
@@ -333,10 +381,6 @@ public class CustomEnchantmentHelper {
         }
     }
 
-    /**
-     * {@return whether the {@code candidate} enchantment is compatible with the
-     * {@code existing} enchantments}
-     */
     public static boolean isCompatible(Collection<AbstractCustomEnchantment> existing, AbstractCustomEnchantment candidate) {
         for (AbstractCustomEnchantment enchantment : existing) {
             if (enchantment.canCombine(candidate)) continue;
@@ -487,14 +531,6 @@ public class CustomEnchantmentHelper {
         return false;
     }
 
-    public static boolean hasEnchantments(ItemStack stack){
-        if (stack.getNbt() != null && stack.getNbt().contains(CUSTOM_ENCHANT_KEY, 9)) {
-            return !stack.getNbt().getList(CUSTOM_ENCHANT_KEY, 10).isEmpty();
-        } else {
-            return false;
-        }
-    }
-
     private static NbtList getLoreForMerge(ItemStack stack, boolean otherLoreExists) {
         NbtCompound nbtCompound2;
         NbtCompound nbtCompound;
@@ -551,9 +587,6 @@ public class CustomEnchantmentHelper {
             }
         }
         NbtList lore = getLoreForMerge(item, nbtCompound.contains(ItemStack.LORE_KEY));
-        System.out.println("preexisting lore: " + lore);
-        System.out.println("prev ench: " + oldLore);
-        System.out.println("new ench: " + newLore);
         if(newLore == null)return;
         if(lore == null){
             retLore.addAll(newLore);
@@ -575,5 +608,29 @@ public class CustomEnchantmentHelper {
         retLore.addAll(lore);
         nbtCompound.put(ItemStack.LORE_KEY,retLore);
         item.setSubNbt(ItemStack.DISPLAY_KEY,nbtCompound);
+    }
+
+    public static <T extends Weighted, R extends Weighted> Optional<Pair<T,R>> getRandomPair(Random random, List<Pair<T,R>> pool) {
+        int totalWeight = 0;
+        for(Pair<T,R> p : pool){
+            if(p.getRight() == null && p.getLeft() != null){
+                totalWeight += p.getLeft().getWeight().getValue();
+            }else if(p.getLeft() == null && p.getRight() != null){
+                totalWeight += p.getRight().getWeight().getValue();
+            }
+        }
+        if (totalWeight == 0) {
+            return Optional.empty();
+        }
+        int i = random.nextInt(totalWeight);
+        return getAtPair(pool, i);
+    }
+    public static <T extends Weighted, R extends Weighted> Optional<Pair<T,R>> getAtPair(List<Pair<T,R>> pool, int totalWeight){
+        for (Pair<T,R> pair : pool) {
+            Weighted weighted = pair.getLeft() != null ? pair.getLeft() : pair.getRight();
+            if ((totalWeight -= weighted.getWeight().getValue()) >= 0) continue;
+            return Optional.of(pair);
+        }
+        return Optional.empty();
     }
 }

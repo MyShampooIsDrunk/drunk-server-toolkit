@@ -1,8 +1,11 @@
 package myshampooisdrunk.drunk_server_toolkit.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentHelper;
 import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentInstance;
+import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.CustomSwordItem;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.entity.Entity;
@@ -10,13 +13,16 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Pair;
+import net.minecraft.util.math.random.Random;
 import org.apache.commons.lang3.mutable.MutableFloat;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -32,6 +38,17 @@ public class EnchantmentHelperMixin {
 
     @Inject(at=@At("TAIL"),method = "getAttackDamage",cancellable = true)
     private static void injectCustomShit(ItemStack stack, EntityGroup group, CallbackInfoReturnable<Float> cir, @Local MutableFloat ret){
+
+        if(WeaponAPI.ITEMS.containsKey(stack.getItem())) {
+            for (AbstractCustomItem custom : WeaponAPI.ITEMS.get(stack.getItem())) {
+                if(custom instanceof CustomSwordItem item){
+                    if(custom.getItem().equals(stack.getItem()) && stack.getOrCreateNbt().getInt("CustomModelData") == custom.getId()){
+                        ret.add(item.getBonusDamage(group, ret.getValue()));
+                    }
+                }
+            }
+        }
+        //put the shit about custom attack damage here
         ret.add(CustomEnchantmentHelper.getAttackDamage(stack,group));
         cir.setReturnValue(ret.floatValue());
     }
@@ -58,14 +75,30 @@ public class EnchantmentHelperMixin {
             CustomEnchantmentHelper.forEachCustomEnchantment(consumer, user.getMainHandStack());
         }
     }
-    @Redirect(at=@At(value = "INVOKE",target = "Lnet/minecraft/enchantment/EnchantmentHelper;getPossibleEntries(ILnet/minecraft/item/ItemStack;Z)Ljava/util/List;"), method = "generateEnchantments")
-    private static List<EnchantmentLevelEntry> generateEnchantsIncludingCustomOnes(int power, ItemStack stack, boolean treasureAllowed){
-        List<EnchantmentLevelEntry> original = EnchantmentHelper.getPossibleEntries(power,stack,treasureAllowed);
-        List<CustomEnchantmentInstance> newEnch = CustomEnchantmentHelper.getPossibleEntries(power, stack, treasureAllowed);
-        for(CustomEnchantmentInstance i : newEnch){
-            //original.add(new EnchantmentLevelEntry(null, ))
+    @Inject(method="enchant",at=@At("HEAD"),cancellable = true)
+    private static void ActuallyEnchantTheItem(Random random, ItemStack target, int level, boolean treasureAllowed, CallbackInfoReturnable<ItemStack> cir){
+        Pair<List<CustomEnchantmentInstance>,List<EnchantmentLevelEntry>> pair = CustomEnchantmentHelper.generate(random, target, level, treasureAllowed);
+        System.out.println("custom: " + pair.getLeft());
+        System.out.println("real: " + pair.getRight());
+        boolean bl = target.isOf(Items.BOOK);
+        if (bl) {
+            target = new ItemStack(Items.ENCHANTED_BOOK);
         }
-        return null;
+        for (EnchantmentLevelEntry enchantmentLevelEntry : pair.getRight()) {
+            if (bl) {
+                EnchantedBookItem.addEnchantment(target, enchantmentLevelEntry);
+                continue;
+            }
+            target.addEnchantment(enchantmentLevelEntry.enchantment, enchantmentLevelEntry.level);
+        }
+        for (CustomEnchantmentInstance enchantmentLevelEntry : pair.getLeft()) {
+            if (bl) {
+                CustomEnchantmentHelper.addBookEnchant(target, enchantmentLevelEntry);
+                continue;
+            }
+            CustomEnchantmentHelper.addCustomEnchantment(target,enchantmentLevelEntry.enchantment, enchantmentLevelEntry.level);
+        }
+        cir.setReturnValue(target);
     }
 }
 

@@ -27,6 +27,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Triple;
@@ -101,8 +102,12 @@ public class WeaponAPI implements ModInitializer {
 
 			}
 			@Override
+			public int getMinPower(int level){
+				return level + 1;
+			}
+			@Override
 			public boolean isCursed(){
-				return true;
+				return false;
 			}
 			@Override
 			public int getMaxLevel(){return 7;}
@@ -110,7 +115,7 @@ public class WeaponAPI implements ModInitializer {
 
 		AbstractCustomEnchantment destEnchant = new AbstractCustomEnchantment(
 				new Identifier("shampoos_stupid_mod","some_enchant_idk_how_explain"),
-				AbstractCustomEnchantment.Rarity.VERY_RARE,
+				AbstractCustomEnchantment.Rarity.COMMON,
 				EnchantmentTarget.ARMOR,
 				new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.FEET}
 		) {
@@ -125,11 +130,11 @@ public class WeaponAPI implements ModInitializer {
 			@Override
 			public void onUserDamaged(LivingEntity user, Entity attacker, int level){
 				Vec3d fin = attacker.getPos().subtract(user.getPos());
-				attacker.setVelocity(fin.multiply(fin.getX()-10,fin.getY()-10,fin.getZ()-10));
+				attacker.setVelocity(fin.multiply(fin.getX()-10,fin.getY()-10,fin.getZ()-10).offset(Direction.UP,1).multiply(0.1*level));
 //				attacker.setVelocity(fin.multiply((double)level/20*(5-Math.abs(attacker.getX()-user.getX())),(double)level/20*(5-Math.abs(attacker.getY()-user.getY())),(double)level/20*(5-Math.abs(attacker.getZ()-user.getZ()))).offset(Direction.UP,0.1));
 //				attacker.setVelocity(fin.multiply(level/attacker.distanceTo(user)).offset(Direction.UP,5));
-				attacker.damage( user.getDamageSources().magic(),4);
-				attacker.sendMessage(Text.of("go shuck yourself basshole"));
+				attacker.damage(user.getDamageSources().magic(),4);
+				if(attacker instanceof PlayerEntity p) p.sendMessage(Text.of("go shuck yourself basshole"),true);
 			}
 		};
 		CustomItemRegistry.registerCustomEnchantment(veryVerySillyEnchantment);
@@ -149,9 +154,7 @@ public class WeaponAPI implements ModInitializer {
 		),bbbbbbbbbbbbbbbbbb2.getIdentifier(),bbbbbbbbbbbbbbbbbb2);
 		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb2, ItemGroups.COMBAT);
 		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb, ItemGroups.COMBAT);
-
 		initializeRecipes();
-
 		CustomItemRegistry.addCustomEnchants(ItemGroups.COMBAT);
 		initializeCommands();
 	}

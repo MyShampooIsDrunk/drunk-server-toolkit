@@ -5,8 +5,11 @@
   "mixins": [
     "AnvilScreenHandlerMixin",
     "EnchantmentHelperMixin",
+    "EnchantmentScreenHandlerAccessor",
+    "EnchantmentScreenHandlerMixin",
     "EntityMixin",
     "ItemMixin",
+    "ItemStackMixin",
     "PlayerAdvancementTrackerMixin",
     "PlayerEntityMixin",
     "PlayerEntityMixin_customCooldowns"
