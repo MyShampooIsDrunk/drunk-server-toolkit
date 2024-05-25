@@ -48,7 +48,6 @@ public class EnchantmentHelperMixin {
                 }
             }
         }
-        //put the shit about custom attack damage here
         ret.add(CustomEnchantmentHelper.getAttackDamage(stack,group));
         cir.setReturnValue(ret.floatValue());
     }

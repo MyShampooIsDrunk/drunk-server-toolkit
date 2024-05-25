@@ -15,7 +15,6 @@ import net.minecraft.util.Pair;
 import java.util.HashSet;
 
 public class CustomItemRegistry {
-
     public static void registerItem(AbstractCustomItem item){
         WeaponAPI.ITEMS.computeIfAbsent(item.getItem(), k -> new HashSet<>());
         WeaponAPI.ITEMS.get(item.getItem()).add(item);

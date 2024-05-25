@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.decoration.DisplayEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
@@ -153,5 +154,19 @@ public abstract class AbstractCustomEnchantment {
     }
     public String toString(){
         return id.toString();
+    }
+
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    }
+    public UseAction getUseAction(ItemStack stack) {
+        return stack.getItem().isFood() ? UseAction.EAT : UseAction.NONE;
+    }
+    public int getMaxUseTime(ItemStack stack) {
+        return 0;
+    }
+    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+    }
+    public boolean isUsedOnRelease(ItemStack stack) {
+        return false;
     }
 }

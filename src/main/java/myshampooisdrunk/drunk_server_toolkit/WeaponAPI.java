@@ -7,11 +7,13 @@ import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomEnchantCooldownManag
 import myshampooisdrunk.drunk_server_toolkit.enchantment.AbstractCustomEnchantment;
 import myshampooisdrunk.drunk_server_toolkit.example.GoofySillyGoofyItem;
 import myshampooisdrunk.drunk_server_toolkit.example.HopefullyThisItemWorks;
+import myshampooisdrunk.drunk_server_toolkit.example.RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom;
 import myshampooisdrunk.drunk_server_toolkit.register.CustomItemRegistry;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.data.client.Model;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -142,8 +144,10 @@ public class WeaponAPI implements ModInitializer {
 		CustomItemRegistry.registerCustomEnchantment(destEnchant);
 		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
 		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
+		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();
 		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
 		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
+		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);
 		CustomItemRegistry.registerRecipe(new ShapelessRecipe("", CraftingRecipeCategory.MISC,
 				bbbbbbbbbbbbbbbbbb.create(),
 				DefaultedList.copyOf(Ingredient.EMPTY,Ingredient.ofItems(Items.STONE),Ingredient.ofItems(Items.STONE))
@@ -154,6 +158,7 @@ public class WeaponAPI implements ModInitializer {
 		),bbbbbbbbbbbbbbbbbb2.getIdentifier(),bbbbbbbbbbbbbbbbbb2);
 		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb2, ItemGroups.COMBAT);
 		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb, ItemGroups.COMBAT);
+		CustomItemRegistry.addToGroup(gijaietgjhjoerhkitjaeigjsirjnthij, ItemGroups.BUILDING_BLOCKS);
 		initializeRecipes();
 		CustomItemRegistry.addCustomEnchants(ItemGroups.COMBAT);
 		initializeCommands();

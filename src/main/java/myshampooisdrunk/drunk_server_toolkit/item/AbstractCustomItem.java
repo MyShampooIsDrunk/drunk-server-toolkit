@@ -2,6 +2,7 @@ package myshampooisdrunk.drunk_server_toolkit.item;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -77,4 +78,21 @@ public abstract class AbstractCustomItem{
         ret.getOrCreateNbt().putInt("CustomModelData",id);
         return ret;
     }
+
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    }
+    public void onCraft(ItemStack stack, World world) {
+    }
+    public UseAction getUseAction(ItemStack stack) {
+        return stack.getItem().isFood() ? UseAction.EAT : UseAction.NONE;
+    }
+    public int getMaxUseTime(ItemStack stack) {
+        return 0;
+    }
+    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+    }
+    public boolean isUsedOnRelease(ItemStack stack) {
+        return false;
+    }
+
 }
