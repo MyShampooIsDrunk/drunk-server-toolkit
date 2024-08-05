@@ -1,6 +1,5 @@
 package myshampooisdrunk.drunk_server_toolkit.item;
 
-import net.fabricmc.yarn.constants.MiningLevels;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
@@ -77,7 +76,7 @@ public class CustomToolItem extends AbstractCustomItem{
     }
 
     public boolean isSuitableFor(BlockState state) {
-        int i = this.getMaterial().getMiningLevel();
+        int i = this.getMaterial().;
         if (i < MiningLevels.DIAMOND && state.isIn(BlockTags.NEEDS_DIAMOND_TOOL)) {
             return false;
         }

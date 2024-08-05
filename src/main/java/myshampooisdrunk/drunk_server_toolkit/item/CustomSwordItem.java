@@ -2,7 +2,7 @@ package myshampooisdrunk.drunk_server_toolkit.item;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.Identifier;
@@ -14,12 +14,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 public abstract class CustomSwordItem extends AbstractCustomItem{
-    protected final List<EntityGroup> bonusDamage = Lists.newArrayList();
+    protected final List<EntityType<?>> bonusDamage = Lists.newArrayList();
     public CustomSwordItem(SwordItem item, String path, Logger logger, String name){
-        this(item, new Identifier(logger.getName(), path), name);
+        this(item, Identifier.of(logger.getName(), path), name);
     }
     public CustomSwordItem(SwordItem item, String path, Logger logger){
-        this(item, new Identifier(logger.getName(), path));
+        this(item, Identifier.of(logger.getName(), path));
     }
     public CustomSwordItem(SwordItem item, Identifier identifier) {
         this(item,identifier, (String) null);
@@ -34,16 +34,16 @@ public abstract class CustomSwordItem extends AbstractCustomItem{
 
     }
 
-    public CustomSwordItem(SwordItem item, String path, Logger logger, String name, EntityGroup... groups){
-        this(item, new Identifier(logger.getName(), path), name);
+    public CustomSwordItem(SwordItem item, String path, Logger logger, String name, EntityType<?>... groups){
+        this(item, Identifier.of(logger.getName(), path), name);
     }
-    public CustomSwordItem(SwordItem item, String path, Logger logger, EntityGroup... groups){
-        this(item, new Identifier(logger.getName(), path),groups);
+    public CustomSwordItem(SwordItem item, String path, Logger logger, EntityType<?>... groups){
+        this(item, Identifier.of(logger.getName(), path),groups);
     }
-    public CustomSwordItem(SwordItem item, Identifier identifier, EntityGroup... groups) {
+    public CustomSwordItem(SwordItem item, Identifier identifier, EntityType<?>... groups) {
         this(item,identifier,null,groups);
     }
-    public CustomSwordItem(SwordItem item, Identifier identifier, @Nullable String itemName, EntityGroup... groups){
+    public CustomSwordItem(SwordItem item, Identifier identifier, @Nullable String itemName, EntityType<?>... groups){
         this(item, identifier,WeaponAPI.ITEM_COUNT.getOrDefault(item,0)+1,itemName,groups);
         if(WeaponAPI.ITEM_COUNT.containsKey(item)){
             WeaponAPI.ITEM_COUNT.put(item,WeaponAPI.ITEM_COUNT.get(item)+1);
@@ -52,11 +52,11 @@ public abstract class CustomSwordItem extends AbstractCustomItem{
         }
 
     }
-    protected CustomSwordItem(SwordItem item, Identifier identifier, int id, String itemName, EntityGroup... groups) {
+    protected CustomSwordItem(SwordItem item, Identifier identifier, int id, String itemName, EntityType<?>... groups) {
         super(item,identifier,id,itemName);
         this.bonusDamage.addAll(List.of(groups));
     }
-    public float getBonusDamage(EntityGroup target, float damage){
+    public float getBonusDamage(EntityType<?> target, float damage){
         //use bonus damage list here; eg: if(bonusDamage.contains(target))return damage * 5;
         return 0;
     }

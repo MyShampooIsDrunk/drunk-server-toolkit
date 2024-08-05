@@ -1,6 +1,8 @@
 package myshampooisdrunk.drunk_server_toolkit.item;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,11 +25,11 @@ public abstract class AbstractCustomItem{
     protected final Item item;
     protected final int id;
     protected final Identifier identifier;
-    public AbstractCustomItem(Item item, String path,Logger logger, String name){
-        this(item, new Identifier(logger.getName(), path), name);
+    public AbstractCustomItem(Item item, String path, Logger logger, String name){
+        this(item, Identifier.of(logger.getName(), path), name);
     }
-    public AbstractCustomItem(Item item, String path,Logger logger){
-        this(item, new Identifier(logger.getName(), path));
+    public AbstractCustomItem(Item item, String path, Logger logger){
+        this(item, Identifier.of(logger.getName(), path));
     }
     public AbstractCustomItem(Item item, Identifier identifier) {
         this(item,identifier,null);
@@ -70,12 +72,13 @@ public abstract class AbstractCustomItem{
     public Item getItem(){return item;}
     public int getId(){return id;}
     public Identifier getIdentifier(){return identifier;}
-    public ItemStack create(){
-        MutableText t = (key != null ? Text.translatable(key) : (MutableText) item.getName()).setStyle(Style.EMPTY.withItalic(false));
-        ItemStack ret = new ItemStack(item).setCustomName(t);//new Formatting("ITALIC",'o',false)
-        NbtCompound name = ret.getOrCreateSubNbt("display");
-        name.putString("Name",Text.Serialization.toJsonString(t));//.replace("{\"text\":","{\"italic\":false,\"text\":")
-        ret.getOrCreateNbt().putInt("CustomModelData",id);
+    public ItemStack create(){//put all custom component data like max_stack_size here
+        MutableText t = key != null ? Text.translatable(key) : (MutableText)item.getName();
+        ItemStack ret = new ItemStack(item);
+        ret.set(DataComponentTypes.ITEM_NAME, t);
+        NbtCompound custom = new NbtCompound();
+        custom.putInt("custom_item_id:",id);
+        ret.set(DataComponentTypes.CUSTOM_DATA,custom);
         return ret;
     }
 
