@@ -139,12 +139,12 @@ public class WeaponAPI implements ModInitializer {
 //		CustomItemRegistry.registerCustomEnchantment(veryVerySillyEnchantment);
 //		CustomItemRegistry.registerCustomEnchantment(notAsSillyEnchant);
 //		CustomItemRegistry.registerCustomEnchantment(destEnchant);
-		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
-		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
-		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();
-		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
-		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
-		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);
+//		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
+//		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
+//		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();
+//		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
+//		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
+//		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);
 //		CustomItemRegistry.registerRecipe(new ShapelessRecipe("", CraftingRecipeCategory.MISC,
 //				bbbbbbbbbbbbbbbbbb.create(),
 //				DefaultedList.copyOf(Ingredient.EMPTY,Ingredient.ofItems(Items.STONE),Ingredient.ofItems(Items.STONE))
@@ -153,10 +153,10 @@ public class WeaponAPI implements ModInitializer {
 //				RawShapedRecipe.create(Map.of('d',Ingredient.ofItems(Items.DEEPSLATE),'a',Ingredient.EMPTY),"ddd","dda","daa")
 //				,bbbbbbbbbbbbbbbbbb2.create()
 //		),bbbbbbbbbbbbbbbbbb2.getIdentifier(),bbbbbbbbbbbbbbbbbb2);
-		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb2, ItemGroups.COMBAT);
-		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb, ItemGroups.COMBAT);
-		CustomItemRegistry.addToGroup(gijaietgjhjoerhkitjaeigjsirjnthij, ItemGroups.BUILDING_BLOCKS);
-		initializeRecipes();
+//		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb2, ItemGroups.COMBAT);
+//		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb, ItemGroups.COMBAT);
+//		CustomItemRegistry.addToGroup(gijaietgjhjoerhkitjaeigjsirjnthij, ItemGroups.BUILDING_BLOCKS);
+//		initializeRecipes();
 //		CustomItemRegistry.addCustomEnchants(ItemGroups.COMBAT);
 		initializeCommands();
 	}

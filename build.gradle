@@ -88,8 +88,3 @@ publishing {
 		// retrieving dependencies.
 	}
 }
-afterEvaluate {
-	downloadAssets {
-		downloadThreads = 4
-	}
-}
