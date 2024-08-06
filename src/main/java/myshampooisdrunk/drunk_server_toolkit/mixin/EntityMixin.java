@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Entity.class)
 public class EntityMixin {
     Entity e = (Entity)(Object)this;
-    @Inject(at=@At("HEAD"),method = "setSneaking")
+    @Inject(at=@At("HEAD"),method = "setSneaking", cancellable = true)
     public void onSneak(boolean sneaking, CallbackInfo ci){
         if(e instanceof PlayerEntity p){
             ItemStack item = p.getStackInHand(Hand.MAIN_HAND);

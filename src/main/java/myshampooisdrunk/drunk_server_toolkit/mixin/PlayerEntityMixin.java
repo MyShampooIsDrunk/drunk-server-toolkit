@@ -26,7 +26,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(entityType, world);
     }
     PlayerEntity user = (PlayerEntity)(Object)this;
-    @Inject(at=@At("HEAD"),method="attack")
+    @Inject(at=@At("HEAD"),method="attack", cancellable = true)
     private void attack(Entity target, CallbackInfo ci) {
         ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
 //        CustomEnchantmentHelper.getEnchantmentList(item).forEach((enchant, level)->{
@@ -43,7 +43,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 //        });
         CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postDrop(user, stack, throwRandomly, retainOwnership, cir));
     }
-    @Inject(at=@At("HEAD"),method="tick")
+    @Inject(at=@At("HEAD"),method="tick", cancellable = true)
     public void whileSneaking(CallbackInfo ci){
         if(this.isSneaking()){
             ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
@@ -53,7 +53,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.whileSneak((PlayerEntity) (Object) this, ci));
         }
     }
-    @Inject(at=@At("HEAD"),method="interact")
+    @Inject(at=@At("HEAD"),method="interact", cancellable = true)
     public void onInteract(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
         ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
 //        CustomEnchantmentHelper.getEnchantmentList(item).forEach((enchant, level)->{
@@ -61,7 +61,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 //        });
         CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onEntityInteraction(user,entity,hand,cir));
     }
-    @Inject(at=@At("HEAD"),method="jump")
+    @Inject(at=@At("HEAD"),method="jump", cancellable = true)
     private void jump(CallbackInfo ci) {
         ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
 //        CustomEnchantmentHelper.getEnchantmentList(item).forEach((enchant, level)->{
