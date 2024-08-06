@@ -1,46 +1,40 @@
 package myshampooisdrunk.drunk_server_toolkit.example;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
-import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomItemCooldownManagerI;
-import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
 import net.minecraft.block.BlockState;
+import net.minecraft.component.type.ToolComponent;
 import net.minecraft.entity.*;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.mob.*;
-import net.minecraft.entity.mob.GhastEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterials;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom extends CustomToolItem {
     public RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom() {
-        super(Items.ACACIA_SLAB,"they_not_like_us", WeaponAPI.LOGGER,"kendr ickl amar", ToolMaterials.NETHERITE,1000f, BlockTags.BUTTONS,BlockTags.BANNERS,BlockTags.GOLD_ORES,BlockTags.PICKAXE_MINEABLE, BlockTags.SHOVEL_MINEABLE, BlockTags.ANVIL, BlockTags.WOOL);
+        super(Items.ACACIA_SLAB, Identifier.of(WeaponAPI.LOGGER.getName(), "they_not_like_us"), "kendr ickl amar",
+                ToolMaterials.NETHERITE,1000f,1,
+                CustomToolItem.alwaysDrop(1000f, BlockTags.BUTTONS,BlockTags.BANNERS,BlockTags.GOLD_ORES,BlockTags.PICKAXE_MINEABLE,
+                        BlockTags.SHOVEL_MINEABLE, BlockTags.ANVIL, BlockTags.WOOL).toArray(new ToolComponent.Rule[]{})
+        );
     }
 
     @Override
-    public void onUse(World world, PlayerEntity player, Hand hand, CallbackInfoReturnable cir) {
+    public void use(World world, PlayerEntity player, Hand hand, CallbackInfoReturnable cir) {
         Vec3d vel = player.getVelocity();
         Vec3d rot = player.getRotationVec(0);
         player.setVelocity(vel.add(rot.multiply(2)));
@@ -56,22 +50,27 @@ public class RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom extends Cu
             TntEntity tnt2 = new TntEntity(world,fin.x-0.1,fin.y+0.1,fin.z+0.1,player);
             TntEntity tnt3 = new TntEntity(world,fin.x+0.1,fin.y+0.1,fin.z-0.1,player);
             TntEntity tnt4 = new TntEntity(world,fin.x-0.1,fin.y+0.1,fin.z-0.1,player);
+//            tnt.setFuse(20);
+//            tnt2.setFuse(20);
+//            tnt3.setFuse(20);
+//            tnt4.setFuse(20);
             switch(i % 4){
                 case 0 -> tnts[i%16] = tnt;
                 case 1 -> tnts1[i%16] = tnt2;
                 case 2 -> tnts2[i%16] = tnt3;
                 case 3 -> tnts3[i%16] = tnt4;
             }
-            tnt.setFuse(1);
-            tnt = new TntEntity(world,fin.x,fin.y-0.1,fin.z,player);
-            tnt.setFuse(2+i%3);
-            payload[i] = tnt;
+            TntEntity tnt5 = new TntEntity(world,fin.x,fin.y-0.1,fin.z,player);
+            tnt5.setFuse(2+i%3);
+            payload[i] = tnt5;
         }
-        for(int i = 0; i < 64; i++){
+        for(int i = 0; i < 16; i++){
             world.spawnEntity(tnts[i]);
             world.spawnEntity(tnts1[i]);
             world.spawnEntity(tnts2[i]);
             world.spawnEntity(tnts3[i]);
+        }
+        for(int i = 0; i < 64; i++){
             world.spawnEntity(payload[i]);
         }
     }
@@ -112,7 +111,7 @@ public class RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom extends Cu
         }
         if (!world.isClient && state.getHardness(world, pos) != 0.0f) {
             if(stack.isDamageable())
-                stack.damage(1, miner, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
+                stack.damage(1, miner, EquipmentSlot.MAINHAND);
         }
     }
 }

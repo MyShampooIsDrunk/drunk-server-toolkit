@@ -16,42 +16,42 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = AnvilScreenHandler.class, priority = 100)
 public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
-    @Inject(
-            method = "updateResult",
-            slice=@Slice(
-                    from=@At(value="INVOKE", target = "Lnet/minecraft/inventory/Inventory;getStack(I)Lnet/minecraft/item/ItemStack;",ordinal = 1),
-                    to = @At("TAIL")
-            ), at=@At("RETURN")
-    )
-    public void injectThisCode(CallbackInfo ci, @Share("arg") LocalRef<ItemStack> argRef){
-        ItemStack itemStack2 = argRef.get();
-        ItemStack itemStack = this.input.getStack(0);
-        ItemStack itemStack3 = this.input.getStack(1);
-        ItemStack ret;
-        if(this.output.getStack(0).isEmpty()){
-            ret=itemStack2;
-        }else{
-            ret=this.output.getStack(0);
-        }
-        if(CustomEnchantmentHelper.echo(CustomEnchantmentHelper.canCombine(itemStack,itemStack3,this.player),"can combine: ")){
-            CustomEnchantmentHelper.handleCustomCombine(itemStack, itemStack3, ret);
-        }else{
-            ret = null;
-        }
-        if(ret!=null){
-            this.output.setStack(0,ret);
-            this.levelCost.set(1);
-            CustomEnchantmentHelper.setEnchantLore(ret,CustomEnchantmentHelper.getEnchantments(itemStack),CustomEnchantmentHelper.getEnchantments(ret));
-        }
-    }
-
-    @ModifyExpressionValue(method = "updateResult",at= @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;copy()Lnet/minecraft/item/ItemStack;",ordinal = 0))
-    public ItemStack modifyValue(ItemStack original, @Share("arg") LocalRef<ItemStack> argRef){
-        argRef.set(original);
-        return original;
-    }
-
-    @Shadow @Final private Property levelCost;
+//    @Inject(
+//            method = "updateResult",
+//            slice=@Slice(
+//                    from=@At(value="INVOKE", target = "Lnet/minecraft/inventory/Inventory;getStack(I)Lnet/minecraft/item/ItemStack;",ordinal = 1),
+//                    to = @At("TAIL")
+//            ), at=@At("RETURN")
+//    )
+//    public void injectThisCode(CallbackInfo ci, @Share("arg") LocalRef<ItemStack> argRef){
+//        ItemStack itemStack2 = argRef.get();
+//        ItemStack itemStack = this.input.getStack(0);
+//        ItemStack itemStack3 = this.input.getStack(1);
+//        ItemStack ret;
+//        if(this.output.getStack(0).isEmpty()){
+//            ret=itemStack2;
+//        }else{
+//            ret=this.output.getStack(0);
+//        }
+//        if(CustomEnchantmentHelper.echo(CustomEnchantmentHelper.canCombine(itemStack,itemStack3,this.player),"can combine: ")){
+//            CustomEnchantmentHelper.handleCustomCombine(itemStack, itemStack3, ret);
+//        }else{
+//            ret = null;
+//        }
+//        if(ret!=null){
+//            this.output.setStack(0,ret);
+//            this.levelCost.set(1);
+//            CustomEnchantmentHelper.setEnchantLore(ret,CustomEnchantmentHelper.getEnchantments(itemStack),CustomEnchantmentHelper.getEnchantments(ret));
+//        }
+//    }
+//
+//    @ModifyExpressionValue(method = "updateResult",at= @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;copy()Lnet/minecraft/item/ItemStack;",ordinal = 0))
+//    public ItemStack modifyValue(ItemStack original, @Share("arg") LocalRef<ItemStack> argRef){
+//        argRef.set(original);
+//        return original;
+//    }
+//
+//    @Shadow @Final private Property levelCost;
 
     //why the fuck did I code all of this...
 /*

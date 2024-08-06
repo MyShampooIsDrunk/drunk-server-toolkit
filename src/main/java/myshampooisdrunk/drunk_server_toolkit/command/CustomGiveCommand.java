@@ -19,6 +19,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,11 +39,7 @@ public class CustomGiveCommand {
     private static final Dynamic2CommandExceptionType FAILED_ITEM_COUNT_EXCEPTION = new Dynamic2CommandExceptionType((item, maxLevel) -> Text.stringifiedTranslatable("commands.enchant.failed.level", item, maxLevel));
     private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("commands.enchant.failed"));
     private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) -> {
-        Collection<AbstractCustomItem> items = new HashSet<>();
-        for(Item t : WeaponAPI.ITEMS.keySet()){
-            items.addAll(WeaponAPI.ITEMS.get(t));
-        }
-        return CommandSource.suggestIdentifiers(items.stream().map(AbstractCustomItem::getIdentifier), builder);
+        return CommandSource.suggestIdentifiers(WeaponAPI.ITEMS.stream().map(AbstractCustomItem::getIdentifier), builder);
     };
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -73,18 +70,16 @@ public class CustomGiveCommand {
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets, Identifier id, int count) throws CommandSyntaxException {
         AbstractCustomItem item = null;
-        for(Item t : WeaponAPI.ITEMS.keySet()){
-            for(AbstractCustomItem i : WeaponAPI.ITEMS.get(t)){
-                if(i.getIdentifier().equals(id)){
-                    item = i;
-                    break;
-                }
+        for (AbstractCustomItem i : WeaponAPI.ITEMS) {
+            if(i.getIdentifier().equals(id)) {
+                item = i;
+                break;
             }
         }
         if(item == null){
             source.sendError(Text.of("Item " + id + " doesn't exist"));
         }
-        int i = item.getItem().getMaxCount();
+        int i = item.create().getMaxCount();
         int j = i * 100;
         ItemStack itemStack = item.create().copyWithCount(count);
         if (count > j) {

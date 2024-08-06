@@ -31,7 +31,7 @@ public abstract class PlayerEntityMixin_customCooldowns extends LivingEntity imp
     }
     @Inject(at=@At(value="INVOKE",target = "Lnet/minecraft/entity/player/ItemCooldownManager;update()V"),method="tick")
     public void updateCustomEnchantMan(CallbackInfo ci){
-        enchManager.update();manager.update();
+        manager.update();
     }
 
     protected PlayerEntityMixin_customCooldowns(EntityType<? extends LivingEntity> entityType, World world) {

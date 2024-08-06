@@ -10,8 +10,5 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(GrindstoneScreenHandler.class)
 public abstract class GrindstoneScreenHandlerMixin extends ScreenHandler {
-
-
-
     protected GrindstoneScreenHandlerMixin(@Nullable ScreenHandlerType<?> type, int syncId) {super(type, syncId);}
 }

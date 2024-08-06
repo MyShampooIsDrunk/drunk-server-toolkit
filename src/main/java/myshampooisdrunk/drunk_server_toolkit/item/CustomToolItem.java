@@ -1,95 +1,104 @@
 package myshampooisdrunk.drunk_server_toolkit.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TntEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ToolComponent;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class CustomToolItem extends AbstractCustomItem{
+public abstract class CustomToolItem extends AbstractCustomItem{
     private final ToolMaterial material;
-    private final List<TagKey<Block>> effectiveBlocks;
+    private final List<ToolComponent.Rule> effectiveBlocks;
     private final float miningSpeed;
+    private final int damagePerBlock;
 
-    public CustomToolItem(Item item, String path, Logger logger, String name, ToolMaterial material, float miningSpeed, TagKey<Block>... effective) {
-        super(item, path, logger, name);
-        this.material = material;
-        effectiveBlocks = Arrays.asList(effective);
-        this.miningSpeed = miningSpeed;
-    }
-    public CustomToolItem(Item item, String path, Logger logger, ToolMaterial material, float miningSpeed, TagKey<Block>... effective) {
-        super(item, path, logger);
-        this.material = material;
-        effectiveBlocks = Arrays.asList(effective);
-        this.miningSpeed = miningSpeed;
-    }
-    public CustomToolItem(Item item, Identifier identifier, ToolMaterial material, float miningSpeed, TagKey<Block>... effective) {
-        super(item, identifier);
-        this.material = material;
-        effectiveBlocks = Arrays.asList(effective);
-        this.miningSpeed = miningSpeed;
-    }
-    public CustomToolItem(Item item, Identifier identifier, @Nullable String itemName, ToolMaterial material, float miningSpeed, TagKey<Block>... effective) {
-        super(item, identifier, itemName);
-        this.material = material;
-        effectiveBlocks = Arrays.asList(effective);
-        this.miningSpeed = miningSpeed;
-    }
-    protected CustomToolItem(Item item, Identifier identifier, int id, String itemName, ToolMaterial material, float miningSpeed, TagKey<Block>... effective) {
-        super(item, identifier, id, itemName);
-        this.material = material;
-        effectiveBlocks = Arrays.asList(effective);
-        this.miningSpeed = miningSpeed;
+    public CustomToolItem(Item item, Identifier identifier,
+                          ToolMaterial material, float miningSpeed, int damagePerBlock, ToolComponent.Rule... effective) {
+        this(item,identifier,null, false, material, miningSpeed, damagePerBlock, effective);
     }
 
-    public List<TagKey<Block>> getEffective(){return effectiveBlocks;}
+    public CustomToolItem(Item item, Identifier identifier, @Nullable String itemName,
+                          ToolMaterial material, float miningSpeed, int damagePerBlock, ToolComponent.Rule... effective) {
+        this(item,identifier,itemName, false, material, miningSpeed, damagePerBlock, effective);
+    }
+
+    public CustomToolItem(Item item, Identifier identifier, @Nullable String itemName, boolean customModel,
+                          ToolMaterial material, float miningSpeed, int damagePerBlock, ToolComponent.Rule... effective) {
+        this(item, identifier,itemName, getModelId(item,customModel), customModel, material, miningSpeed, damagePerBlock, effective);
+    }
+
+    protected CustomToolItem(Item item, Identifier identifier, String itemName, int modelId, boolean customModel,
+                             ToolMaterial material, float miningSpeed, int damagePerBlock, ToolComponent.Rule... effective) {
+        super(item, identifier, itemName, modelId, customModel);
+        this.material = material;
+        this.effectiveBlocks = Arrays.asList(effective);
+        this.miningSpeed = miningSpeed;
+        this.damagePerBlock = damagePerBlock;
+        ToolComponent tool = new ToolComponent(effectiveBlocks, miningSpeed, damagePerBlock);
+        addComponent(DataComponentTypes.TOOL, tool);
+    }
     public ToolMaterial getMaterial(){return material;}
 
-    public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        for(TagKey<Block> tag : effectiveBlocks){
-            if(state.isIn(tag)) return this.miningSpeed;
-        }
-        return 1.0f;
+    public static List<ToolComponent.Rule> alwaysDrop(Block... blocks){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        rules.add(ToolComponent.Rule.ofAlwaysDropping(List.of(blocks),1));
+        return rules;
     }
 
-    public void postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfo ci) {
+    @SafeVarargs
+    public static List<ToolComponent.Rule> alwaysDrop(TagKey<Block>... tags){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        for (TagKey<Block> tag : tags) {
+            rules.add(ToolComponent.Rule.ofAlwaysDropping(tag,1));
+        }
+        return rules;
     }
 
-    public boolean isSuitableFor(BlockState state) {
-        int i = this.getMaterial().;
-        if (i < MiningLevels.DIAMOND && state.isIn(BlockTags.NEEDS_DIAMOND_TOOL)) {
-            return false;
+    public static List<ToolComponent.Rule> alwaysDrop(Map<TagKey<Block>,Float> tagSpeeds){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        for (Map.Entry<TagKey<Block> , Float> entry : tagSpeeds.entrySet()) {
+            rules.add(ToolComponent.Rule.ofAlwaysDropping(entry.getKey(),entry.getValue()));
         }
-        if (i < MiningLevels.IRON && state.isIn(BlockTags.NEEDS_IRON_TOOL)) {
-            return false;
-        }
-        if (i < MiningLevels.STONE && state.isIn(BlockTags.NEEDS_STONE_TOOL)) {
-            return false;
-        }
-        for(TagKey<Block> tag : effectiveBlocks){
-            if(state.isIn(tag)) return true;
-        }
-        return false;
+        return rules;
     }
 
+    public static List<ToolComponent.Rule> alwaysDrop(float speed, Block... blocks){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        rules.add(ToolComponent.Rule.ofAlwaysDropping(List.of(blocks),speed));
+        return rules;
+    }
+
+    @SafeVarargs
+    public static List<ToolComponent.Rule> alwaysDrop(float speed, TagKey<Block>... blocks){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        for (TagKey<Block> tag: blocks) {
+            rules.add(ToolComponent.Rule.ofAlwaysDropping(tag, speed));
+        }
+        return rules;
+    }
+
+    public static List<ToolComponent.Rule> alwaysDropBlock(Map<List<Block>,Float> blockSpeeds){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        for (Map.Entry<List<Block> , Float> entry : blockSpeeds.entrySet()) {
+            rules.add(ToolComponent.Rule.ofAlwaysDropping(entry.getKey(),entry.getValue()));
+        }
+        return rules;
+    }
+
+    @SafeVarargs
+    public static List<ToolComponent.Rule> neverDrop(TagKey<Block>... tags){
+        List<ToolComponent.Rule> rules = new ArrayList<>();
+        for (TagKey<Block> tag : tags) {
+            rules.add(ToolComponent.Rule.ofNeverDropping(tag));
+        }
+        return rules;
+    }
 }

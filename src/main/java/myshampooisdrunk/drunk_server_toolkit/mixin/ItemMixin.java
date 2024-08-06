@@ -1,12 +1,17 @@
 package myshampooisdrunk.drunk_server_toolkit.mixin;
 
-import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
-import myshampooisdrunk.drunk_server_toolkit.enchantment.CustomEnchantmentHelper;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.CustomItemHelper;
+import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
@@ -21,33 +26,49 @@ public abstract class ItemMixin{
 	@Inject(at = @At("HEAD"), method = "use",cancellable = true)
 	private void useItem(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
 		ItemStack item = user.getStackInHand(hand);
-		CustomEnchantmentHelper.getEnchantmentList(item).forEach((enchant, level)->{
-			enchant.onUse(world, user, hand,level,cir);
-		});
-		if(WeaponAPI.ITEMS.containsKey(item.getItem())){
-			for(AbstractCustomItem custom : WeaponAPI.ITEMS.get(item.getItem())){
-				if(custom.getItem().equals(item.getItem()) && item.getOrCreateNbt().getInt("CustomModelData") == custom.getId()){
-					custom.onUse(world, user, hand,cir);
-					break;
-				}
-			}
-		}
-		cir.setReturnValue(TypedActionResult.fail(item));
+//		CustomEnchantmentHelper.getEnchantmentList(item).forEach((enchant, level)->{
+//			enchant.onUse(world, user, hand,level,cir);
+//		});
+		CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.use(world,user,hand,cir));
 	}
 
-	@Inject(at=@At("HEAD"),method = "onStoppedUsing")
+	@Inject(at=@At("HEAD"),method = "onStoppedUsing", cancellable = true)
 	private void afterStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
-		CustomEnchantmentHelper.getEnchantmentList(stack).forEach((enchant, level)->{
-			enchant.onStoppedUsing(stack,world,user,remainingUseTicks);
-		});
-		if(WeaponAPI.ITEMS.containsKey(stack.getItem())){
-			for(AbstractCustomItem custom : WeaponAPI.ITEMS.get(stack.getItem())){
-				if(custom.getItem().equals(stack.getItem()) && stack.getOrCreateNbt().getInt("CustomModelData") == custom.getId()){
-					custom.onStoppedUsing(stack,world,user,remainingUseTicks);
-					break;
-				}
-			}
-		}
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.onStoppedUsing(stack,world,user,remainingUseTicks,ci));
+//		CustomEnchantmentHelper.getEnchantmentList(stack).forEach((enchant, level)->{
+//			enchant.onStoppedUsing(stack,world,user,remainingUseTicks);
+//		});
 	}
-
+	@Inject(at = @At("HEAD"), method = "getMaxUseTime", cancellable = true)
+	public void getMaxUseTime(ItemStack stack, LivingEntity user, CallbackInfoReturnable<Integer> cir){
+		CustomItemHelper.getCustomItem(stack).ifPresent(c -> cir.setReturnValue(c.getMaxUseTime(stack,user)));
+	}
+	@ModifyReturnValue(method = "canRepair", at=@At("RETURN"))
+    private boolean canRepairCustom(boolean original, @Local(ordinal = 0, argsOnly = true) ItemStack stack,
+									@Local(ordinal = 1, argsOnly = true) ItemStack ingredient){
+		if(CustomItemHelper.getCustomItem(stack).orElse(null) instanceof CustomToolItem tool) {
+			return original || tool.getMaterial().getRepairIngredient().test(ingredient);
+		}
+		return original;
+	}
+	@Inject(at=@At("HEAD"), method = "finishUsing", cancellable = true)
+	public void finishUsingCustom(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.finishUsing(stack,world,user,cir));
+	}
+	@Inject(at=@At("HEAD"), method = "postProcessComponents", cancellable = true)
+	public void postProcessComponentsCustom(ItemStack stack, CallbackInfo ci){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postProcessComponents(stack,ci));
+	}
+	@Inject(at=@At("HEAD"), method = "onItemEntityDestroyed", cancellable = true)
+	public void onItemEntityDestroyedCustom(ItemEntity entity, CallbackInfo ci){
+		CustomItemHelper.getCustomItem(entity.getStack()).ifPresent(custom -> custom.onItemEntityDestroyed(entity,ci));
+	}
+	@Inject(at=@At("HEAD"), method = "usageTick", cancellable = true)
+	public void usageTickCustom(World world, LivingEntity user, ItemStack stack, int remainingUseTicks, CallbackInfo ci){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.usageTick(world, user, stack,remainingUseTicks, ci));
+	}
+	@Inject(at=@At("HEAD"), method = "useOnBlock", cancellable = true)
+	public void useOnBlockCustom(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir){
+		CustomItemHelper.getCustomItem(context.getStack()).ifPresent(custom -> custom.useOnBlock(context,cir));
+	}
 }

@@ -14,12 +14,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerAdvancementTracker.class)
 public abstract class PlayerAdvancementTrackerMixin {
 
-    @Inject(at=@At("TAIL"),method = "grantCriterion")
-    private void resetRecipeAdvancement(AdvancementEntry advancement, String criterionName, CallbackInfoReturnable<Boolean> cir){
-        for(Identifier i : WeaponAPI.RECIPE_IDS.keySet()){
-            if(advancement.id().equals(WeaponAPI.RECIPE_IDS.get(i).getRight())){
-                ((PlayerAdvancementTracker)(Object)this).revokeCriterion(advancement,criterionName);
-            }
-        }
-    }
+//    @Inject(at=@At("TAIL"),method = "grantCriterion")
+//    private void resetRecipeAdvancement(AdvancementEntry advancement, String criterionName, CallbackInfoReturnable<Boolean> cir){
+//        for(Identifier i : WeaponAPI.RECIPE_IDS.keySet()){
+//            if(advancement.id().equals(WeaponAPI.RECIPE_IDS.get(i).getRight())){
+//                ((PlayerAdvancementTracker)(Object)this).revokeCriterion(advancement,criterionName);
+//            }
+//        }
+//    }
 }
