@@ -26,8 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
-
 public abstract class AbstractCustomItem{
     private final ComponentMap.Builder components;
 
@@ -36,7 +34,6 @@ public abstract class AbstractCustomItem{
     protected final int modelId;
     protected final Identifier identifier;
     protected final boolean customModel;
-    private Optional<CustomItemModel> model = Optional.empty();
 
     public AbstractCustomItem(Item item, Identifier identifier) {
         this(item,identifier,null, false);
@@ -90,9 +87,6 @@ public abstract class AbstractCustomItem{
     public void onCraftByPlayer(ItemStack stack, World world, PlayerEntity player, CallbackInfo ci) {
         this.onCraft(stack, world, ci);
     }
-    public UseAction getUseAction(ItemStack stack) {
-        return stack.contains(DataComponentTypes.FOOD) ? UseAction.EAT : UseAction.NONE;
-    }
     public int getMaxUseTime(ItemStack stack, LivingEntity entity) {
         FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
         return foodComponent != null ? foodComponent.getEatTicks() : 0;
@@ -107,17 +101,18 @@ public abstract class AbstractCustomItem{
 
     public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfo ci) {
     }
-    public int getItemBarColor(ItemStack stack) {
-        int i = stack.getMaxDamage();
-        float f = Math.max(0.0F, ((float)i - (float)stack.getDamage()) / (float)i);
-        return MathHelper.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
-    }
-    public int getItemBarStep(ItemStack stack) {
-        return MathHelper.clamp(Math.round(13.0F - (float)stack.getDamage() * 13.0F / (float)stack.getMaxDamage()), 0, 13);
-    }
-    public boolean isItemBarVisible(ItemStack stack) {
-        return stack.isDamaged();
-    }
+    //idk if i wanna code these in yet cuz i feel like they could be buggy since a lot of that shit is also done client-side
+//    public int getItemBarColor(ItemStack stack) {
+//        int i = stack.getMaxDamage();
+//        float f = Math.max(0.0F, ((float)i - (float)stack.getDamage()) / (float)i);
+//        return MathHelper.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+//    }
+//    public int getItemBarStep(ItemStack stack) {
+//        return MathHelper.clamp(Math.round(13.0F - (float)stack.getDamage() * 13.0F / (float)stack.getMaxDamage()), 0, 13);
+//    }
+//    public boolean isItemBarVisible(ItemStack stack) {
+//        return stack.isDamaged();
+//    }
     public void onSneak(boolean sneaking, PlayerEntity player, CallbackInfo ci){
     }
     public void whileSneak(PlayerEntity p, CallbackInfo ci){

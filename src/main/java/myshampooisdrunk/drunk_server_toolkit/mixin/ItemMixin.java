@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomItemHelper;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,5 +71,21 @@ public abstract class ItemMixin{
 	@Inject(at=@At("HEAD"), method = "useOnBlock", cancellable = true)
 	public void useOnBlockCustom(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir){
 		CustomItemHelper.getCustomItem(context.getStack()).ifPresent(custom -> custom.useOnBlock(context,cir));
+	}
+	@Inject(at=@At("HEAD"), method = "inventoryTick", cancellable = true)
+	public void useOnBlockCustom(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.inventoryTick(stack,world,entity,slot,selected,ci));
+	}
+	@Inject(at=@At("HEAD"), method = "onCraftByPlayer", cancellable = true)
+	public void useOnBlockCustom(ItemStack stack, World world, PlayerEntity player, CallbackInfo ci){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.onCraftByPlayer(stack,world,player,ci));
+	}
+	@Inject(at=@At("HEAD"), method = "isUsedOnRelease", cancellable = true)
+	public void useOnBlockCustom(ItemStack stack, CallbackInfoReturnable<Boolean> cir){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> cir.setReturnValue(custom.isUsedOnRelease(stack)));
+	}
+	@Inject(at=@At("HEAD"), method = "postDamageEntity", cancellable = true)
+	public void useOnBlockCustom(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfo ci){
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postDamageEntity(stack,target,attacker,ci));
 	}
 }

@@ -141,7 +141,7 @@ public class WeaponAPI implements ModInitializer {
 //		CustomItemRegistry.registerCustomEnchantment(destEnchant);
 //		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
 //		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
-//		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();
+//		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();//what the fuck is going on in this one line lmao; this shit chaotic af
 //		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
 //		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
 //		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);

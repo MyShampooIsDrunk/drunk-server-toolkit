@@ -5,6 +5,8 @@ import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.type.ToolComponent;
 import net.minecraft.entity.*;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,6 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -73,6 +76,7 @@ public class RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom extends Cu
         for(int i = 0; i < 64; i++){
             world.spawnEntity(payload[i]);
         }
+        cir.setReturnValue(TypedActionResult.pass(player.getStackInHand(hand)));
     }
 
     @Override
@@ -112,6 +116,16 @@ public class RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom extends Cu
         if (!world.isClient && state.getHardness(world, pos) != 0.0f) {
             if(stack.isDamageable())
                 stack.damage(1, miner, EquipmentSlot.MAINHAND);
+        }
+    }
+    @Override
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci){
+        if(entity instanceof PlayerEntity p && !world.isClient()){
+            if(selected){
+                p.setStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 10, 3), p);
+            }else {
+                p.setStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 10, 3), p);
+            }
         }
     }
 }
