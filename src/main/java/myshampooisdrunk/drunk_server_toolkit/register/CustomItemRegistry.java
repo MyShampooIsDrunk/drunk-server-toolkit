@@ -8,27 +8,24 @@ import net.minecraft.item.*;
 import net.minecraft.registry.RegistryKey;
 
 public class CustomItemRegistry {
-    public static AbstractCustomItem registerItem(AbstractCustomItem item){
+    public static AbstractCustomItem registerItem(AbstractCustomItem item) {
         WeaponAPI.ITEMS.add(item);
         return item;
 //        WeaponAPI.ITEMS.computeIfAbsent(item.getItem(), k -> new HashSet<>());
 //        WeaponAPI.ITEMS.get(item.getItem()).add(item);
     }
 
-    public static AbstractCustomItem registerWithRecipe(CustomRecipeItem<?> recipeItem){
+    public static CustomRecipeItem<?> registerWithRecipe(CustomRecipeItem<?> recipeItem) {
+        registerItem(recipeItem);
         WeaponAPI.RECIPES.add(recipeItem);
         return recipeItem;
     }
 
     public static void addToGroup(AbstractCustomItem item, RegistryKey<ItemGroup> g){
-        ItemGroupEvents.modifyEntriesEvent(g).register(content -> {
-            content.add(item.create());
-        });
+        ItemGroupEvents.modifyEntriesEvent(g).register(content -> content.add(item.create()));
     }
     public static void addToGroup(AbstractCustomItem item, RegistryKey<ItemGroup> g, ItemStack after){
-        ItemGroupEvents.modifyEntriesEvent(g).register(content -> {
-            content.addAfter(after, item.create());
-        });
+        ItemGroupEvents.modifyEntriesEvent(g).register(content -> content.addAfter(after, item.create()));
     }
 //    public static void registerRecipe(CraftingRecipe r, Identifier id, AbstractCustomItem item){
 //        WeaponAPI.CUSTOM_RECIPES.put(id, new Pair<>(r,item));
