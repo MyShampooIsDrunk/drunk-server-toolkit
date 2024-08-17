@@ -1,37 +1,14 @@
 package myshampooisdrunk.drunk_server_toolkit;
 
 import myshampooisdrunk.drunk_server_toolkit.command.CustomGiveCommand;
-import myshampooisdrunk.drunk_server_toolkit.command.GiveBookCommand;
-import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomEnchantCooldownManagerI;
-import myshampooisdrunk.drunk_server_toolkit.example.GoofySillyGoofyItem;
-import myshampooisdrunk.drunk_server_toolkit.example.HopefullyThisItemWorks;
-import myshampooisdrunk.drunk_server_toolkit.example.RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom;
-import myshampooisdrunk.drunk_server_toolkit.register.CustomItemRegistry;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipeItem;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.*;
-import net.minecraft.recipe.*;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
@@ -41,6 +18,7 @@ public class WeaponAPI implements ModInitializer {
 //	public static final Map<Item,Set<AbstractCustomItem>> ITEMS = new HashMap<>();
 	public static final Set<AbstractCustomItem> ITEMS = new HashSet<>();
 	public static final Map<Item,Integer> MODEL_COUNT = new HashMap<>();
+	public static final Set<CustomRecipeItem<?>> RECIPES = new HashSet<>();
 //	public static final Map<Identifier, Pair<CraftingRecipe,AbstractCustomItem>> CUSTOM_RECIPES = new HashMap<>();
 //	public static final Map<Identifier,Triple<Identifier,Identifier,Identifier>> RECIPE_IDS = new HashMap<>();
 

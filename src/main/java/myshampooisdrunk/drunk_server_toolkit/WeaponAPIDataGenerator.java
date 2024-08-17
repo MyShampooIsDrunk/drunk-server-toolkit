@@ -58,27 +58,6 @@ public class WeaponAPIDataGenerator implements DataGeneratorEntrypoint {
 //		pack.addProvider(AdvancementsProvider::new);
 //		pack.addProvider(CustomRecipeProvider::new);
 	}
-
-	static class CustomModelProvider extends FabricModelProvider {
-
-		public CustomModelProvider(FabricDataOutput output) {
-			super(output);
-		}
-
-		@Override
-		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-
-		}
-
-		@Override
-		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-			WeaponAPI.ITEMS.forEach(custom -> {
-				if(custom.hasCustomModel()){
-
-				}
-			});
-		}
-	}
 //
 //	static class AdvancementsProvider extends FabricAdvancementProvider {
 //		protected AdvancementsProvider(FabricDataOutput dataGenerator) {

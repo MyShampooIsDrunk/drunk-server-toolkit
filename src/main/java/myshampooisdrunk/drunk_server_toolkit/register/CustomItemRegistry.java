@@ -2,21 +2,24 @@ package myshampooisdrunk.drunk_server_toolkit.register;
 
 import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
+import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipeItem;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
-import net.minecraft.recipe.*;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-
-import java.util.HashSet;
 
 public class CustomItemRegistry {
-    public static void registerItem(AbstractCustomItem item){
+    public static AbstractCustomItem registerItem(AbstractCustomItem item){
         WeaponAPI.ITEMS.add(item);
+        return item;
 //        WeaponAPI.ITEMS.computeIfAbsent(item.getItem(), k -> new HashSet<>());
 //        WeaponAPI.ITEMS.get(item.getItem()).add(item);
     }
+
+    public static AbstractCustomItem registerWithRecipe(CustomRecipeItem<?> recipeItem){
+        WeaponAPI.RECIPES.add(recipeItem);
+        return recipeItem;
+    }
+
     public static void addToGroup(AbstractCustomItem item, RegistryKey<ItemGroup> g){
         ItemGroupEvents.modifyEntriesEvent(g).register(content -> {
             content.add(item.create());
