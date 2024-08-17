@@ -25,5 +25,6 @@ public class CustomRecipeProvider extends FabricRecipeProvider {
     @Override
     public void generate(RecipeExporter exporter) {
         WeaponAPI.RECIPES.forEach(rItem -> exporter.accept(rItem.getIdentifier(), rItem.recipe(), null));
+        WeaponAPI.ITEM_RECIPES.forEach((recipe, id) -> exporter.accept(id, recipe, null));
     }
 }

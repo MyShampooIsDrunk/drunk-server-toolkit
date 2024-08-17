@@ -7,6 +7,8 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.item.*;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ public class WeaponAPI implements ModInitializer {
 	public static final Set<AbstractCustomItem> ITEMS = new HashSet<>();
 	public static final Map<Item,Integer> MODEL_COUNT = new HashMap<>();
 	public static final Set<CustomRecipeItem<?>> RECIPES = new HashSet<>();
+	public static final Map<Recipe<?>, Identifier> ITEM_RECIPES = new HashMap<>();
 //	public static final Map<Identifier, Pair<CraftingRecipe,AbstractCustomItem>> CUSTOM_RECIPES = new HashMap<>();
 //	public static final Map<Identifier,Triple<Identifier,Identifier,Identifier>> RECIPE_IDS = new HashMap<>();
 

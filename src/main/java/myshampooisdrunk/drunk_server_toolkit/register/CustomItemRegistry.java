@@ -5,7 +5,9 @@ import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipeItem;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 
 public class CustomItemRegistry {
     public static AbstractCustomItem registerItem(AbstractCustomItem item) {
@@ -19,6 +21,10 @@ public class CustomItemRegistry {
         registerItem(recipeItem);
         WeaponAPI.RECIPES.add(recipeItem);
         return recipeItem;
+    }
+
+    public static void registerRecipe(Recipe<?> recipe, Identifier id){
+        WeaponAPI.ITEM_RECIPES.put(recipe, id);
     }
 
     public static void addToGroup(AbstractCustomItem item, RegistryKey<ItemGroup> g){
