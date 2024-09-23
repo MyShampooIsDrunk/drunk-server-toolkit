@@ -142,7 +142,7 @@ public abstract class AbstractCustomItem{
     public void postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfo ci) {
     }
     //should be run in the initializer of a new custom item if you want custom item attributes and shit
-    public <T> void addComponent(ComponentType<T> type, T val){
+    protected <T> void addComponent(ComponentType<T> type, T val){
         components.add(type, val);
     }
 

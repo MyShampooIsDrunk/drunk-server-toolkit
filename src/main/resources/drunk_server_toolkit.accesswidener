@@ -1,4 +1,2 @@
 accessWidener v2 named
 
-accessible field net/minecraft/screen/EnchantmentScreenHandler seed Lnet/minecraft/screen/Property;
-accessible field net/minecraft/screen/EnchantmentScreenHandler random Lnet/minecraft/util/math/random/Random;
