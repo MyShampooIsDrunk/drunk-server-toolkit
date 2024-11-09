@@ -63,13 +63,13 @@ public class GoofySillyGoofyItem extends AbstractCustomItem {
 
     @Override
     public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
-        System.out.println("STOPPED USING");
+//        System.out.println("STOPPED USING");
         user.addVelocity(0,((float)(getMaxUseTime(stack, user) - remainingUseTicks))/100f,0);//the longer you use it the longer it takes to finish lol
     }
 
     @Override
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks, CallbackInfo ci) {
-        System.out.println("THERE IS " + remainingUseTicks + " LEFT");
+//        System.out.println("THERE IS " + remainingUseTicks + " LEFT");
     }
 
     @Override

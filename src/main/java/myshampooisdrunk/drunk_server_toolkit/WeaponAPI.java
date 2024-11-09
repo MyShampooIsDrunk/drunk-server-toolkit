@@ -1,8 +1,13 @@
 package myshampooisdrunk.drunk_server_toolkit;
 
 import myshampooisdrunk.drunk_server_toolkit.command.CustomGiveCommand;
+import myshampooisdrunk.drunk_server_toolkit.example.CustomPotionRegistryExample;
+import myshampooisdrunk.drunk_server_toolkit.example.GoofySillyGoofyItem;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipeItem;
+import myshampooisdrunk.drunk_server_toolkit.recipe.potion.CustomBrewingRecipe;
+import myshampooisdrunk.drunk_server_toolkit.register.CustomBrewingRecipeRegistry;
+import myshampooisdrunk.drunk_server_toolkit.register.CustomItemRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -46,6 +51,7 @@ public class WeaponAPI implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		CustomPotionRegistryExample.init();
 //		AbstractCustomEnchantment veryVerySillyEnchantment = new AbstractCustomEnchantment(
 //				new Identifier("shampoos_stupid_mod","bruhhhhhhhhhhhhhhhh"),
 //				AbstractCustomEnchantment.Rarity.COMMON,
@@ -120,10 +126,10 @@ public class WeaponAPI implements ModInitializer {
 //		CustomItemRegistry.registerCustomEnchantment(veryVerySillyEnchantment);
 //		CustomItemRegistry.registerCustomEnchantment(notAsSillyEnchant);
 //		CustomItemRegistry.registerCustomEnchantment(destEnchant);
-//		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
+		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
 //		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
 //		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();//what the fuck is going on in this one line lmao; this shit chaotic af
-//		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
+		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
 //		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
 //		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);
 //		CustomItemRegistry.registerRecipe(new ShapelessRecipe("", CraftingRecipeCategory.MISC,

@@ -1,25 +1,21 @@
 package myshampooisdrunk.drunk_server_toolkit.recipe.potion;
 
-import myshampooisdrunk.drunk_server_toolkit.recipe.CustomRecipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.input.RecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
 
-public class CustomBrewingRecipe extends CustomRecipe<Ingredient> {
-    public CustomBrewingRecipe(Ingredient input, Ingredient output, Ingredient ingredient) {
-        super(input, output, ingredient);
+import java.util.function.Predicate;
+
+public record CustomBrewingRecipe(Predicate<ItemStack> input, Predicate<ItemStack> ingredient, ItemStack output) {
+    public boolean test(ItemStack input, ItemStack ingredient) {
+        return this.input.test(input) && this.ingredient.test(ingredient);
+    }
+    public boolean testIngredient(ItemStack ingredient) {
+        return this.ingredient.test(ingredient);
     }
 
-    @Override
-    public boolean matches(RecipeInput input, World world) {
-
-        return false;
-    }
-
-    @Override
-    public ItemStack craft(RecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack craft(ItemStack input, ItemStack ingredient) {
+        if(test(input,ingredient)){
+            return output;
+        }
         return null;
     }
 }
