@@ -210,7 +210,7 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
                 case LINGER -> "lingering_";
             };
             Identifier id2 = Identifier.of(id.getNamespace(), potion + id.getPath());
-            ret = Text.translatable(id2.toTranslationKey("", type + ".name"));
+            ret = Text.translatable(id2.toTranslationKey());
 //you should end up getting keys like "test_mod:potion_of_test.name", "test_mod:splash_potion_of_test.name", etc.
         } else {
             String potion = switch (type) {
