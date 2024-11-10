@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"myshampooisdrunk.drunk_server_toolkit.WeaponAPI"
+			"myshampooisdrunk.drunk_server_toolkit.DST"
 		],
 		"fabric-datagen": [
-			"myshampooisdrunk.drunk_server_toolkit.WeaponAPIDataGenerator"
+			"myshampooisdrunk.drunk_server_toolkit.DSTDataGenerator"
 		]
 	},
 	"accessWidener" : "drunk_server_toolkit.accesswidener",

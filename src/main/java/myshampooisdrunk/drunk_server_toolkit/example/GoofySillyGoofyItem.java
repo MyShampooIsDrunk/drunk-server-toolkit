@@ -1,6 +1,6 @@
 package myshampooisdrunk.drunk_server_toolkit.example;
 
-import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
+import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomItemCooldownManagerI;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.minecraft.component.DataComponentTypes;
@@ -9,13 +9,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,7 +22,7 @@ import java.util.List;
 
 public class GoofySillyGoofyItem extends AbstractCustomItem {
     public GoofySillyGoofyItem() {
-        super(Items.BONE, Identifier.of(WeaponAPI.LOGGER.getName(),"goofy_silly_goofy_item"),"if.this.works.i.will.cry.tears.of.joy");
+        super(Items.BONE, Identifier.of(DST.LOGGER.getName(),"goofy_silly_goofy_item"),"if.this.works.i.will.cry.tears.of.joy");
         addComponent(DataComponentTypes.MAX_STACK_SIZE, 94);
         addComponent(DataComponentTypes.FOOD, new FoodComponent.Builder()
                 .alwaysEdible()

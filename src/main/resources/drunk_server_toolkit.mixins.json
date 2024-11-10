@@ -3,17 +3,12 @@
   "package": "myshampooisdrunk.drunk_server_toolkit.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AnvilScreenHandlerMixin",
     "BrewingRecipeRegistryMixin",
     "BrewingStandBlockEntityMixin",
     "BrewingStandScreenHandlerMixin",
-    "EnchantmentHelperMixin",
-    "EnchantmentScreenHandlerAccessor",
-    "EnchantmentScreenHandlerMixin",
     "EntityMixin",
     "ItemMixin",
     "ItemStackMixin",
-    "PlayerAdvancementTrackerMixin",
     "PlayerEntityMixin",
     "PlayerEntityMixin_customCooldowns"
   ],

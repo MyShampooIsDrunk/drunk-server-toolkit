@@ -1,6 +1,6 @@
 package myshampooisdrunk.drunk_server_toolkit.example;
 
-import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
+import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.type.ToolComponent;
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom extends CustomToolItem {
     public RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom() {
-        super(Items.ACACIA_SLAB, Identifier.of(WeaponAPI.LOGGER.getName(), "they_not_like_us"), "kendr ickl amar",
+        super(Items.ACACIA_SLAB, Identifier.of(DST.LOGGER.getName(), "they_not_like_us"), "kendr ickl amar",
                 ToolMaterials.NETHERITE,1000f,1,
                 CustomToolItem.alwaysDrop(1000f, BlockTags.BUTTONS,BlockTags.BANNERS,BlockTags.GOLD_ORES,BlockTags.PICKAXE_MINEABLE,
                         BlockTags.SHOVEL_MINEABLE, BlockTags.ANVIL, BlockTags.WOOL).toArray(new ToolComponent.Rule[]{})

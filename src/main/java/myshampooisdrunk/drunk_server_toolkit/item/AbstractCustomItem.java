@@ -1,6 +1,6 @@
 package myshampooisdrunk.drunk_server_toolkit.item;
 
-import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
+import myshampooisdrunk.drunk_server_toolkit.DST;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
@@ -20,7 +20,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -149,12 +148,12 @@ public abstract class AbstractCustomItem{
     protected static int getModelId(Item item, boolean customModel){
         int modelId = -1;
         if(customModel){
-            if(WeaponAPI.MODEL_COUNT.containsKey(item)){
-                WeaponAPI.MODEL_COUNT.put(item,WeaponAPI.MODEL_COUNT.get(item)+1);
+            if(DST.MODEL_COUNT.containsKey(item)){
+                DST.MODEL_COUNT.put(item, DST.MODEL_COUNT.get(item)+1);
             }else{
-                WeaponAPI.MODEL_COUNT.put(item,1);
+                DST.MODEL_COUNT.put(item,1);
             }
-            modelId = WeaponAPI.MODEL_COUNT.get(item);
+            modelId = DST.MODEL_COUNT.get(item);
         }
         return modelId;
     }

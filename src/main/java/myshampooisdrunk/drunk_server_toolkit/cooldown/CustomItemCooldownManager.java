@@ -1,7 +1,5 @@
 package myshampooisdrunk.drunk_server_toolkit.cooldown;
 
-import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
-
 import com.google.common.collect.Maps;
 import java.util.Iterator;
 import java.util.Map;

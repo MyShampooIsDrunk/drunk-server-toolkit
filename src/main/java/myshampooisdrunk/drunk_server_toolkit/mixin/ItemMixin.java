@@ -2,7 +2,6 @@ package myshampooisdrunk.drunk_server_toolkit.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomItemHelper;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
 import net.minecraft.entity.Entity;

@@ -1,6 +1,7 @@
 package myshampooisdrunk.drunk_server_toolkit.item.potion;
 
 import com.mojang.datafixers.util.Either;
+import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.recipe.CustomIngredient;
 import myshampooisdrunk.drunk_server_toolkit.recipe.potion.CustomBrewingRecipe;
 import myshampooisdrunk.drunk_server_toolkit.register.CustomBrewingRecipeRegistry;
@@ -39,7 +40,7 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
         ItemStack ret = new ItemStack(type.item);
         List<StatusEffectInstance> effects = new ArrayList<>();
         statusEffects.forEach((func, eff) ->
-                effects.add(new StatusEffectInstance(eff, func.apply(potency, durLvl, type), potency)));
+                effects.add(new StatusEffectInstance(eff, func.apply(durLvl, potency, type) * (type == PotionType.LINGER ? 4:1), potency)));
         components.add(DataComponentTypes.ITEM_NAME, name);
         components.add(DataComponentTypes.POTION_CONTENTS,
                 new PotionContentsComponent(basePotion, customColor, effects));
@@ -58,96 +59,115 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
                 reagent);
     }
 
+
+    /*
+    rP -> reactantPotion
+    rS -> reactantSplash
+    rL -> reactantLingering
+    re -> reagant
+
+    Sp -> drink to splash ingredient
+    Li -> splash to linger ingredient
+
+    P -> potion
+
+    re + rP = P_drink
+    re + rS = P_splash
+    re + rL = P_linger
+
+    P_drink + Sp = P_splash
+    P_splash + Li = P_linger
+
+    rDur(n) = ingredient for to get to n+1 duration
+    rPot(n) = ingredient for to get to n+1 potency
+
+    P_x(dur(n), pot(0)) + rDur(n) = P_x(dur(n+1),pot(0))
+    P_x(dur(0), pot(n)) + rPot(n) = P_x(dur(0),pot(n+1))
+
+
+    */
+
     public void registerBrewingRecipes(Optional<Predicate<ItemStack>> reactantPotion,
                                        Optional<Predicate<ItemStack>> reactantSplash,
                                        Optional<Predicate<ItemStack>> reactantLingering,
                                        Predicate<ItemStack> reagent) {
-        if(reactantSplash.isPresent()) {
-            for (int i = 0; i <= maxPotency; i++) {
-                CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantSplash.get(), reagent,
-                        this.create(i, 0, PotionType.SPLASH));
-                CustomBrewingRecipeRegistry.registerRecipe(recipe);
-            }
 
-            if (maxDuration >= 1) {
-                for (int i = 1; i <= maxDuration; i++) {
-                    CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantSplash.get(), reagent,
-                            this.create(0, i, PotionType.SPLASH));
-                    CustomBrewingRecipeRegistry.registerRecipe(recipe);
-                }
-            }
-
-            for (int i = 0; i <= maxPotency; i++) {
-                CustomBrewingRecipe recipe = new CustomBrewingRecipe(
-                        CustomIngredient.ofStacks(this.create(i,0,PotionType.DRINK)),
-                        reagent, this.create(i, 0, PotionType.SPLASH));
-                CustomBrewingRecipeRegistry.registerRecipe(recipe);
-            }
-
-            if (maxDuration >= 1) {
-                for (int i = 1; i <= maxDuration; i++) {
-
-                    CustomBrewingRecipe recipe = new CustomBrewingRecipe(
-                            CustomIngredient.ofStacks(this.create(0,i,PotionType.DRINK)),
-                            reagent, this.create(0, i, PotionType.SPLASH));
-                    CustomBrewingRecipeRegistry.registerRecipe(recipe);
-                }
-            }
-        }
-
-        if(reactantLingering.isPresent()) {
-            for (int i = 0; i <= maxPotency; i++) {
-                CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantLingering.get(), reagent,
-                        this.create(i, 0, PotionType.LINGER));
-                CustomBrewingRecipeRegistry.registerRecipe(recipe);
-            }
-
-            if (maxDuration >= 1) {
-                for (int i = 1; i <= maxDuration; i++) {
-                    CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantLingering.get(), reagent,
-                            this.create(0, i, PotionType.LINGER));
-                    CustomBrewingRecipeRegistry.registerRecipe(recipe);
-                }
-            }
-        }
-
+        //7 equations
+        //reactant to potion
         if(reactantPotion.isPresent()) {
-            for (int i = 0; i <= maxPotency; i++) {
-                CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantPotion.get(), reagent,
-                        this.create(i, 0, PotionType.DRINK));
-                CustomBrewingRecipeRegistry.registerRecipe(recipe);
-            }
-
-            if (maxDuration >= 1) {
-                for (int i = 1; i <= maxDuration; i++) {
-                    CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantPotion.get(), reagent,
-                            this.create(0, i, PotionType.DRINK));
-                    CustomBrewingRecipeRegistry.registerRecipe(recipe);
-                }
-            }
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantPotion.get(), reagent,
+                    this.create(0, 0, PotionType.DRINK));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
+        }
+        if(reactantSplash.isPresent()) {
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantSplash.get(), reagent,
+                    this.create(0, 0, PotionType.SPLASH));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
+        }
+        if(reactantLingering.isPresent()) {
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(reactantLingering.get(), reagent,
+                    this.create(0, 0, PotionType.LINGER));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
         }
 
+        //4 more equations
+
+        //drink to splash
+        for (int i = 0; i <= maxDuration(); i++) {
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(
+                    CustomIngredient.ofStacks(true,this.create(0,i,PotionType.DRINK)),
+                    splashIngredient,
+                    this.create(0,i,PotionType.SPLASH));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
+        }
+        if(maxPotency >= 1) for (int i = 1; i <= maxPotency(); i++) {
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(
+                    CustomIngredient.ofStacks(true,this.create(i,0,PotionType.DRINK)),
+                    splashIngredient,
+                    this.create(i,0,PotionType.SPLASH));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
+        }
+        //splash to linger
+        for (int i = 0; i <= maxDuration(); i++) {
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(
+                    CustomIngredient.ofStacks(true,this.create(0,i,PotionType.SPLASH)),
+                    lingerIngredient,
+                    this.create(0,i,PotionType.LINGER));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
+        }
+        if(maxPotency >= 1) for (int i = 1; i <= maxPotency(); i++) {
+            CustomBrewingRecipe recipe = new CustomBrewingRecipe(
+                    CustomIngredient.ofStacks(true,this.create(i,0,PotionType.SPLASH)),
+                    lingerIngredient,
+                    this.create(i,0,PotionType.LINGER));
+            CustomBrewingRecipeRegistry.registerRecipe(recipe);
+        }
+
+        //potency and duration
         for (PotionType type : PotionType.values()) {
-            Optional<Predicate<ItemStack>> left;
-            Optional<List<Predicate<ItemStack>>> right;
-            if((left = potencyIngredient.left()).isPresent()) {
-                if(maxPotency>=1){
-                    for (int i = 0; i <= maxPotency-1; i++) {
+            Optional<Predicate<ItemStack>> left1;
+            Optional<List<Predicate<ItemStack>>> right1;
+            Optional<Predicate<ItemStack>> left2;
+            Optional<List<Predicate<ItemStack>>> right2;
+            //potency
+            if((left1 = potencyIngredient.left()).isPresent()) {
+                if(maxPotency >= 1){
+                    for (int i = 0; i < maxPotency; i++) {
                         CustomBrewingRecipe recipe = new CustomBrewingRecipe(
                                 CustomIngredient.ofStacks(true,this.create(i,0,type)),
-                                left.get(),
+                                left1.get(),
                                 this.create(i+1, 0, type));
                         CustomBrewingRecipeRegistry.registerRecipe(recipe);
                     }
                 }
             } else {
-                right = potencyIngredient.right();
-                assert right.isPresent();
-                if(maxPotency>=1){
-                    for (int i = 0; i <= maxPotency-1; i++) {
+                right1 = potencyIngredient.right();
+                assert right1.isPresent();
+                if(maxPotency >= 1){
+                    for (int i = 0; i < maxPotency; i++) {
                         CustomBrewingRecipe recipe = new CustomBrewingRecipe(
                                 CustomIngredient.ofStacks(true,this.create(i,0,type)),
-                                right.get().get(i),
+                                right1.get().get(i),
                                 this.create(i+1, 0, type));
                         CustomBrewingRecipeRegistry.registerRecipe(recipe);
                     }
@@ -155,56 +175,28 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
             }
 
             //duration
-            if((left = durationIngredient.left()).isPresent()) {
-                if(maxDuration>=1){
-                    for (int i = 0; i <= maxDuration-1; i++) {
+            if((left2 = durationIngredient.left()).isPresent()) {
+                if(maxDuration >= 1){
+                    for (int i = 0; i < maxDuration; i++) {
                         CustomBrewingRecipe recipe = new CustomBrewingRecipe(
                                 CustomIngredient.ofStacks(true,this.create(0,i,type)),
-                                left.get(),
+                                left2.get(),
                                 this.create(0, i+1, type));
                         CustomBrewingRecipeRegistry.registerRecipe(recipe);
                     }
                 }
             } else {
-                right = durationIngredient.right();
-                assert right.isPresent();
-                if(maxDuration>=1){
-                    for (int i = 0; i <= maxDuration-1; i++) {
+                right2 = durationIngredient.right();
+                assert right2.isPresent();
+                if(maxDuration >= 1){
+                    for (int i = 0; i < maxDuration; i++) {
                         CustomBrewingRecipe recipe = new CustomBrewingRecipe(
                                 CustomIngredient.ofStacks(true,this.create(0,i,type)),
-                                right.get().get(i),
+                                right2.get().get(i),
                                 this.create(0, i+1, type));
                         CustomBrewingRecipeRegistry.registerRecipe(recipe);
                     }
                 }
-            }
-        }
-
-        for(int i = 0; i < maxDuration; i++) {
-            CustomBrewingRecipe recipe = new CustomBrewingRecipe(
-                    CustomIngredient.ofStacks(true,this.create(0,i,PotionType.DRINK)),
-                    splashIngredient,
-                    this.create(0, i, PotionType.SPLASH));
-            CustomBrewingRecipeRegistry.registerRecipe(recipe);
-            recipe = new CustomBrewingRecipe(
-                    CustomIngredient.ofStacks(true,this.create(0,i,PotionType.SPLASH)),
-                    lingerIngredient,
-                    this.create(0, i, PotionType.LINGER));
-            CustomBrewingRecipeRegistry.registerRecipe(recipe);
-        }
-
-        if(maxPotency >= 1) {
-            for(int i = 1; i < maxPotency; i++){
-                CustomBrewingRecipe recipe = new CustomBrewingRecipe(
-                        CustomIngredient.ofStacks(true,this.create(i,0,PotionType.DRINK)),
-                        splashIngredient,
-                        this.create(i, 0, PotionType.SPLASH));
-                CustomBrewingRecipeRegistry.registerRecipe(recipe);
-                recipe = new CustomBrewingRecipe(
-                        CustomIngredient.ofStacks(true,this.create(i,0,PotionType.SPLASH)),
-                        lingerIngredient,
-                        this.create(i, 0, PotionType.LINGER));
-                CustomBrewingRecipeRegistry.registerRecipe(recipe);
             }
         }
     }
@@ -342,9 +334,11 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
         public CustomPotion build(Identifier id){
             assert maxDurationLevel >= 0;
             assert maxPotency >= 0;
-            return new CustomPotion(id, translatable, itemName, overrideName,
+            CustomPotion ret = new CustomPotion(id, translatable, itemName, overrideName,
                     textModifier, color, potion, statusEffects,maxPotency, maxDurationLevel, potencyIngredient,
                     durationIngredient, splashIngredient,lingerIngredient);
+            DST.POTIONS.put(id,ret);
+            return ret;
         }
     }
 
@@ -357,13 +351,23 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
         PotionType(Item item){
             this.item = item;
         }
-
+        public static String[] types(){
+            return new String[]{"drink", "splash", "linger"};
+        }
         @Override
         public String toString(){
             return switch(this) {
                 case DRINK -> "potion";
                 case SPLASH -> "splash_potion";
                 case LINGER -> "lingering_potion";
+            };
+        }
+
+        public static PotionType fromString(String s) {
+            return switch (s){
+                default -> DRINK;
+                case "splash" -> SPLASH;
+                case "linger" -> LINGER;
             };
         }
     }

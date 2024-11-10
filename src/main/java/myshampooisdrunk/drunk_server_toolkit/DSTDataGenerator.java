@@ -1,52 +1,9 @@
 package myshampooisdrunk.drunk_server_toolkit;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.*;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.AdvancementRewards;
-import net.minecraft.advancement.criterion.RecipeCraftedCriterion;
-import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Model;
-import net.minecraft.data.client.TextureKey;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.function.*;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.util.Identifier;
 
-import net.minecraft.util.collection.DefaultedList;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-public class WeaponAPIDataGenerator implements DataGeneratorEntrypoint {
+public class DSTDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator gen) {
 		initializeDataGen(gen);
@@ -66,11 +23,11 @@ public class WeaponAPIDataGenerator implements DataGeneratorEntrypoint {
 //
 //		@Override
 //		public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
-//			for(Identifier id : WeaponAPI.CUSTOM_RECIPES.keySet()){
+//			for(Identifier id : DST.CUSTOM_RECIPES.keySet()){
 //				AdvancementEntry temp = Advancement.Builder.create()
-//						.criterion("after_crafted", RecipeCraftedCriterion.Conditions.create(WeaponAPI.RECIPE_IDS.get(id).getLeft()))
-//						.rewards(AdvancementRewards.Builder.loot(WeaponAPI.RECIPE_IDS.get(id).getMiddle()))
-//						.build(WeaponAPI.RECIPE_IDS.get(id).getRight());
+//						.criterion("after_crafted", RecipeCraftedCriterion.Conditions.create(DST.RECIPE_IDS.get(id).getLeft()))
+//						.rewards(AdvancementRewards.Builder.loot(DST.RECIPE_IDS.get(id).getMiddle()))
+//						.build(DST.RECIPE_IDS.get(id).getRight());
 //				consumer.accept(temp);
 //			}
 //		}
@@ -83,16 +40,16 @@ public class WeaponAPIDataGenerator implements DataGeneratorEntrypoint {
 //
 //		@Override
 //		public void generate(RecipeExporter exporter) {
-//			for(Identifier id : WeaponAPI.CUSTOM_RECIPES.keySet()){
-//				if(WeaponAPI.CUSTOM_RECIPES.get(id).getLeft() instanceof ShapelessRecipe r){
+//			for(Identifier id : DST.CUSTOM_RECIPES.keySet()){
+//				if(DST.CUSTOM_RECIPES.get(id).getLeft() instanceof ShapelessRecipe r){
 //					ShapelessRecipeJsonBuilder j = ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.KNOWLEDGE_BOOK);
 //					for(Ingredient in : r.getIngredients()){
 //						j=j.input(in);
 //					}
 //
 //					j.group("").criterion(RecipeProvider.hasItem(Items.AIR), RecipeProvider.conditionsFromItem(Items.AIR))
-//							.offerTo(exporter,WeaponAPI.RECIPE_IDS.get(id).getLeft());
-//				}else if(WeaponAPI.CUSTOM_RECIPES.get(id).getLeft() instanceof ShapedRecipe s){
+//							.offerTo(exporter,DST.RECIPE_IDS.get(id).getLeft());
+//				}else if(DST.CUSTOM_RECIPES.get(id).getLeft() instanceof ShapedRecipe s){
 ////					for(Ingredient j : s.getIngredients()){
 ////						System.out.println(Arrays.toString(j.getMatchingStacks()));
 ////					}
@@ -137,7 +94,7 @@ public class WeaponAPIDataGenerator implements DataGeneratorEntrypoint {
 //
 //					j[0].pattern(pattern[0]).pattern(pattern[1]).pattern(pattern[2]).group("")
 //							.criterion(RecipeProvider.hasItem(Items.AIR), RecipeProvider.conditionsFromItem(Items.AIR))
-//							.offerTo(exporter,WeaponAPI.RECIPE_IDS.get(id).getLeft());
+//							.offerTo(exporter,DST.RECIPE_IDS.get(id).getLeft());
 //				}
 //			}
 //		}
@@ -149,10 +106,10 @@ public class WeaponAPIDataGenerator implements DataGeneratorEntrypoint {
 //
 //		@Override
 //		public void accept(BiConsumer<Identifier, LootTable.Builder> exporter) {
-//			for(Identifier i : WeaponAPI.CUSTOM_RECIPES.keySet()){
-//				ItemStack item = WeaponAPI.CUSTOM_RECIPES.get(i).getRight().create();
+//			for(Identifier i : DST.CUSTOM_RECIPES.keySet()){
+//				ItemStack item = DST.CUSTOM_RECIPES.get(i).getRight().create();
 //				exporter.accept(
-//						WeaponAPI.RECIPE_IDS.get(i).getMiddle(),
+//						DST.RECIPE_IDS.get(i).getMiddle(),
 //						new LootTable.Builder().pool(
 //								LootPool.builder()
 //										.rolls(ConstantLootNumberProvider.create(1))

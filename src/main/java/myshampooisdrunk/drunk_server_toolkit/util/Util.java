@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
 
 import java.util.Collection;
+import java.util.List;
 
 public class Util {
     @SuppressWarnings({"unchecked"})
@@ -16,6 +17,11 @@ public class Util {
     }
     public static <T> Collection<T> addAllAndGet(Collection<T> init, Collection<T> items){
         init.addAll(items);
+        return init;
+    }
+    @SafeVarargs
+    public static <T> Collection<T> addAllAndGet(Collection<T> init, T... items){
+        init.addAll(List.of(items));
         return init;
     }
 }

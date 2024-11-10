@@ -10,16 +10,14 @@ import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import myshampooisdrunk.drunk_server_toolkit.WeaponAPI;
+import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,7 +27,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 
 public class CustomGiveCommand {
@@ -39,7 +36,7 @@ public class CustomGiveCommand {
     private static final Dynamic2CommandExceptionType FAILED_ITEM_COUNT_EXCEPTION = new Dynamic2CommandExceptionType((item, maxLevel) -> Text.stringifiedTranslatable("commands.enchant.failed.level", item, maxLevel));
     private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("commands.enchant.failed"));
     private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) -> {
-        return CommandSource.suggestIdentifiers(WeaponAPI.ITEMS.stream().map(AbstractCustomItem::getIdentifier), builder);
+        return CommandSource.suggestIdentifiers(DST.ITEMS.stream().map(AbstractCustomItem::getIdentifier), builder);
     };
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -70,7 +67,7 @@ public class CustomGiveCommand {
 
     private static int execute(ServerCommandSource source, Collection<ServerPlayerEntity> targets, Identifier id, int count) throws CommandSyntaxException {
         AbstractCustomItem item = null;
-        for (AbstractCustomItem i : WeaponAPI.ITEMS) {
+        for (AbstractCustomItem i : DST.ITEMS) {
             if(i.getIdentifier().equals(id)) {
                 item = i;
                 break;

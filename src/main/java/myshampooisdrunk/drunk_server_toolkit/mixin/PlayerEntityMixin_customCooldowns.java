@@ -1,7 +1,5 @@
 package myshampooisdrunk.drunk_server_toolkit.mixin;
 
-import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomEnchantCooldownManager;
-import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomEnchantCooldownManagerI;
 import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomItemCooldownManager;
 import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomItemCooldownManagerI;
 import net.minecraft.entity.EntityType;
@@ -15,16 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = PlayerEntity.class,priority = Integer.MAX_VALUE-10)
-public abstract class PlayerEntityMixin_customCooldowns extends LivingEntity implements CustomItemCooldownManagerI, CustomEnchantCooldownManagerI {
-    @Unique
-    private final CustomEnchantCooldownManager enchManager = new CustomEnchantCooldownManager();
+public abstract class PlayerEntityMixin_customCooldowns extends LivingEntity implements CustomItemCooldownManagerI {
     @Unique
     private final CustomItemCooldownManager manager = new CustomItemCooldownManager();
-
-    @Override
-    public CustomEnchantCooldownManager getCustomEnchantCooldownManager(){
-        return enchManager;
-    }
     @Override
     public CustomItemCooldownManager getCustomItemCooldownManager(){
         return manager;
