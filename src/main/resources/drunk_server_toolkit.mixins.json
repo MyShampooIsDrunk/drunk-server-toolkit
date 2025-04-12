@@ -6,6 +6,7 @@
     "BrewingRecipeRegistryMixin",
     "BrewingStandBlockEntityMixin",
     "BrewingStandScreenHandlerMixin",
+    "ItemDisplayEntityInvoker",
     "EntityMixin",
     "ItemMixin",
     "ItemStackMixin",

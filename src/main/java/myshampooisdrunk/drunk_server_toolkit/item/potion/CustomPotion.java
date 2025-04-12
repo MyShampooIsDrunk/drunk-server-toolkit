@@ -242,8 +242,8 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
         int maxDurationLevel = 1;
         Predicate<ItemStack> splashIngredient = Ingredient.ofItems(Items.GUNPOWDER);
         Predicate<ItemStack> lingerIngredient = Ingredient.ofItems(Items.DRAGON_BREATH);
-        Either<Predicate<ItemStack>, List<Predicate<ItemStack>>> potencyIngredient = Either.left(Ingredient.ofItems(Items.REDSTONE));
-        Either<Predicate<ItemStack>, List<Predicate<ItemStack>>> durationIngredient = Either.left(Ingredient.ofItems(Items.GLOWSTONE_DUST));
+        Either<Predicate<ItemStack>, List<Predicate<ItemStack>>> potencyIngredient = Either.left(Ingredient.ofItems(Items.GLOWSTONE_DUST));
+        Either<Predicate<ItemStack>, List<Predicate<ItemStack>>> durationIngredient = Either.left(Ingredient.ofItems(Items.REDSTONE));
 
         Builder(){
         }
