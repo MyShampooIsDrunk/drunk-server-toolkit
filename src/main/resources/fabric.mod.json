@@ -7,6 +7,12 @@
 	"authors": [
 		"Me!"
 	],
+	"custom": {
+		"cardinal-components": [
+			"drunk_server_toolkit:multiblock_data",
+			"drunk_server_toolkit:multiblock_core_data"
+		]
+	},
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/MyShampooIsDrunk/drunk-server-toolkit"
@@ -20,6 +26,9 @@
 		],
 		"fabric-datagen": [
 			"myshampooisdrunk.drunk_server_toolkit.DSTDataGenerator"
+		],
+		"cardinal-components": [
+			"myshampooisdrunk.drunk_server_toolkit.component.DSTComponentRegistry"
 		]
 	},
 	"accessWidener" : "drunk_server_toolkit.accesswidener",

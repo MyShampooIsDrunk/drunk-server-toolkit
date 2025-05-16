@@ -10,10 +10,7 @@ import org.ladysnake.cca.api.v3.component.Component;
 import java.util.Map;
 import java.util.UUID;
 
-public interface MultiblockData extends Component {
-    UUID getUUID();
-    Identifier getMultiblockID();
-    void setEntityId(String id);
-    String getEntityId();
-    void setMultiblock(MultiblockStructure structure, Vec3d pos);
+public interface MultiblockCoreData extends Component {
+    void setBlockstateData(Map<BlockPos, BlockState> data);
+    Map<BlockPos, BlockState> getBlockstateData();
 }

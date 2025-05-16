@@ -2,6 +2,9 @@ package myshampooisdrunk.drunk_server_toolkit;
 
 import myshampooisdrunk.drunk_server_toolkit.command.CustomGiveCommand;
 import myshampooisdrunk.drunk_server_toolkit.command.GivePotionCommand;
+import myshampooisdrunk.drunk_server_toolkit.component.EntityMultiblockData;
+import myshampooisdrunk.drunk_server_toolkit.component.ItemDisplayEntityMultiblockCoreData;
+import myshampooisdrunk.drunk_server_toolkit.example.multiblock.MultiblockRegistryExample;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipeItem;
 import myshampooisdrunk.drunk_server_toolkit.item.potion.CustomPotion;
@@ -11,6 +14,8 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +25,10 @@ public class DST implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("drunk_server_toolkit");
 //	public static final Map<Identifier, AbstractCustomEnchantment> ENCHANTMENTS = new HashMap<>();
 //	public static final Map<Item,Set<AbstractCustomItem>> ITEMS = new HashMap<>();
+public static final ComponentKey<EntityMultiblockData> ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY = ComponentRegistry.getOrCreate(
+		id("multiblock_data"), EntityMultiblockData.class);
+	public static final ComponentKey<ItemDisplayEntityMultiblockCoreData> MULTIBLOCK_CORE_DATA_COMPONENT_KEY = ComponentRegistry.getOrCreate(
+			id("multiblock_core_data"), ItemDisplayEntityMultiblockCoreData.class);
 	public static final Set<AbstractCustomItem> ITEMS = new HashSet<>();
 	public static final Map<Item,Integer> MODEL_COUNT = new HashMap<>();
 	public static final Set<CustomRecipeItem<?>> RECIPES = new HashSet<>();
@@ -48,10 +57,11 @@ public class DST implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+//		MultiblockRegistryExample.init();
 //		CustomPotionRegistryExample.init();
 //		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
 //		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
-//		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();//what the fuck is going on in this one line lmao; this shit chaotic af
+//		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();//what the fuck is going on in this one line lmao
 //		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
 //		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
 //		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);
@@ -61,5 +71,9 @@ public class DST implements ModInitializer {
 //		initializeRecipes();
 //		CustomItemRegistry.addCustomEnchants(ItemGroups.COMBAT);
 		initializeCommands();
+	}
+
+	public static Identifier id(String path){
+		return Identifier.of(LOGGER.getName(), path);
 	}
 }
