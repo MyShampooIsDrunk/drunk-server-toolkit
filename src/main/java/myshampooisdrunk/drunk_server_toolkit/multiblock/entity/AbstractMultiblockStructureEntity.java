@@ -5,10 +5,7 @@ import myshampooisdrunk.drunk_server_toolkit.component.MultiblockData;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.registry.MultiblockRegistry;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.structure.MultiblockStructure;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +35,7 @@ public abstract class AbstractMultiblockStructureEntity<E extends Entity> {
 
     public E create(ServerWorld world, MultiblockStructure structure, BlockPos center, Vec3d relative){
         Vec3d spawnPos = relative.add(center.toCenterPos());
-        E entity = this.type.create(world);
+        E entity = this.type.create(world, SpawnReason.MOB_SUMMONED);
         assert entity != null;
         MultiblockData data = entity.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY);
 
@@ -105,7 +102,7 @@ public abstract class AbstractMultiblockStructureEntity<E extends Entity> {
     }
 
     //LivingEntity
-    public void damage(DamageSource source, float amount, Entity me, CallbackInfoReturnable<Boolean> cir) {
+    public void damage(ServerWorld world, DamageSource source, float amount, Entity me, CallbackInfoReturnable<Boolean> cir) {
     }
 
     public void takeShieldHit(LivingEntity attacker, Entity me, CallbackInfo ci){

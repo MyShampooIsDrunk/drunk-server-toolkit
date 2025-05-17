@@ -16,7 +16,8 @@ public class CustomItemRegistry {
     }
 
     public static CustomRecipeItem<?> registerWithRecipe(CustomRecipeItem<?> recipeItem) {
-        registerItem(recipeItem);
+        if(recipeItem instanceof AbstractCustomItem item)
+            registerItem(item);
         DST.RECIPES.add(recipeItem);
         return recipeItem;
     }

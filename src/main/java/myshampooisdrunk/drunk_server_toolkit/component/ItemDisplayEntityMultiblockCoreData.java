@@ -38,9 +38,7 @@ public class ItemDisplayEntityMultiblockCoreData implements MultiblockCoreData{
 
     @Override
     public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        RegistryEntryLookup<Block> lookup = this.world != null
-                ? this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK)
-                : Registries.BLOCK.getReadOnlyWrapper();
+        RegistryEntryLookup<Block> lookup = this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK);
         NbtList list = tag.getList("blocks", NbtElement.COMPOUND_TYPE);
         for (int i = 0; i < list.size(); i++) {
             NbtCompound pair = list.getCompound(i);

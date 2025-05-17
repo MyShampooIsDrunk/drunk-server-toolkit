@@ -1,9 +1,14 @@
 package myshampooisdrunk.drunk_server_toolkit.datagen;
 
 import myshampooisdrunk.drunk_server_toolkit.DST;
+import myshampooisdrunk.drunk_server_toolkit.recipe.CustomRecipeGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.server.recipe.RecipeExporter;
+import net.minecraft.data.recipe.RecipeExporter;
+import net.minecraft.data.recipe.RecipeGenerator;
+import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,8 +19,12 @@ public class CustomRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    public void generate(RecipeExporter exporter) {
-        DST.RECIPES.forEach(rItem -> exporter.accept(rItem.getIdentifier(), rItem.recipe(), null));
-        DST.ITEM_RECIPES.forEach((recipe, id) -> exporter.accept(id, recipe, null));
+    public RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup wrapperLookup, RecipeExporter exporter) {
+        return new CustomRecipeGenerator(wrapperLookup, exporter);
+    }
+
+    @Override
+    public String getName() {
+        return "CustomRecipeProvider";
     }
 }

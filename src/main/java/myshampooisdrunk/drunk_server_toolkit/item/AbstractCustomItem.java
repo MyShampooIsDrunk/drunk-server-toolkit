@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -25,34 +26,30 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
+
 public abstract class AbstractCustomItem{
     private final ComponentMap.Builder components;
-
+    private final CustomModelDataComponent customModelData;
     protected final String key;
     protected final Item item;
-    protected final int modelId;
     protected final Identifier identifier;
-    protected final boolean customModel;
 
     public AbstractCustomItem(Item item, Identifier identifier) {
-        this(item,identifier,null, false);
+        this(item,identifier,null, null);
     }
     public AbstractCustomItem(Item item, Identifier identifier, @Nullable String itemName) {
-        this(item,identifier,itemName, false);
+        this(item,identifier,itemName, null);
     }
-    public AbstractCustomItem(Item item, Identifier identifier, @Nullable String itemName, boolean customModel){
-        this(item, identifier,itemName, getModelId(item,customModel), customModel);
-    }
-    protected AbstractCustomItem(Item item, Identifier identifier, String itemName, int modelId, boolean customModel) {
+    protected AbstractCustomItem(Item item, Identifier identifier, String itemName, @Nullable CustomModelDataComponent customModelData) {
         this.identifier=identifier;
         this.key=itemName;
         this.item = item;
-        this.modelId = modelId;
-        this.customModel = customModel;
         this.components = ComponentMap.builder();
+        this.customModelData = customModelData;
+//        if(customModelData != null) addComponent(DataComponentTypes.CUSTOM_MODEL_DATA, customModelData);
     }
     public Item getItem(){return item;}
-    public int getModelId(){return modelId;}
     public Identifier getIdentifier(){return identifier;}
 
     public NbtCompound getCustomNbt(){
@@ -65,18 +62,18 @@ public abstract class AbstractCustomItem{
         MutableText t = key != null ? Text.translatable(key) : (MutableText)item.getName();
         ItemStack ret = new ItemStack(item);
         ret.set(DataComponentTypes.ITEM_NAME, t);
-        if(hasCustomModel()) {
-            CustomModelDataComponent model = new CustomModelDataComponent(modelId);
-            ret.set(DataComponentTypes.CUSTOM_MODEL_DATA, model);
-        }
         ret.set(DataComponentTypes.CUSTOM_DATA,NbtComponent.of(getCustomNbt()));
+        if(customModelData != null) ret.set(DataComponentTypes.CUSTOM_MODEL_DATA,customModelData);
         ret.applyComponentsFrom(components.build());
-//        components.build().forEach(c -> ret.set(Util.forceCast(c.type()),c)); frankly i have no idea how THE FUCK this works, but i dont need it so idc
         return ret;
     }
 
     public boolean hasCustomModel(){
-        return customModel;
+        return customModelData != null;
+    }
+
+    public Optional<CustomModelDataComponent> getCustomModel(){
+        return Optional.ofNullable(customModelData);
     }
 
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
@@ -87,8 +84,8 @@ public abstract class AbstractCustomItem{
         this.onCraft(stack, world, ci);
     }
     public int getMaxUseTime(ItemStack stack, LivingEntity entity) {
-        FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
-        return foodComponent != null ? foodComponent.getEatTicks() : 0;
+        ConsumableComponent consumableComponent = stack.get(DataComponentTypes.CONSUMABLE);
+        return consumableComponent != null ? consumableComponent.getConsumeTicks() : 0;
     }
     public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
     }
@@ -119,13 +116,13 @@ public abstract class AbstractCustomItem{
     public void onJump(PlayerEntity p, CallbackInfo ci){
     }
     //cir is here in case you don't wanna override normal right click
-    public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable cir) {
+    public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir) {
 //        FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
 //        cir.setReturnValue(foodComponent != null ? user.eatFood(world, stack, foodComponent) : stack);
     }
-    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable cir) {
+    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
     }
-    public void useOnBlock(ItemUsageContext context, CallbackInfoReturnable cir) {
+    public void useOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
         cir.setReturnValue(ActionResult.PASS);
     }
     public void onEntityInteraction(PlayerEntity user, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
@@ -144,17 +141,17 @@ public abstract class AbstractCustomItem{
     protected <T> void addComponent(ComponentType<T> type, T val){
         components.add(type, val);
     }
-
-    protected static int getModelId(Item item, boolean customModel){
-        int modelId = -1;
-        if(customModel){
-            if(DST.MODEL_COUNT.containsKey(item)){
-                DST.MODEL_COUNT.put(item, DST.MODEL_COUNT.get(item)+1);
-            }else{
-                DST.MODEL_COUNT.put(item,1);
-            }
-            modelId = DST.MODEL_COUNT.get(item);
-        }
-        return modelId;
-    }
+//
+//    protected static int getModelId(Item item, boolean customModel){
+//        int modelId = -1;
+//        if(customModel){
+//            if(DST.MODEL_COUNT.containsKey(item)){
+//                DST.MODEL_COUNT.put(item, DST.MODEL_COUNT.get(item)+1);
+//            }else{
+//                DST.MODEL_COUNT.put(item,1);
+//            }
+//            modelId = DST.MODEL_COUNT.get(item);
+//        }
+//        return modelId;
+//    }
 }

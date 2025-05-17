@@ -4,11 +4,14 @@ import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.cooldown.CustomItemCooldownManagerI;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.DamageResistantComponent;
 import net.minecraft.component.type.FoodComponent;
+import net.minecraft.component.type.UseRemainderComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -28,11 +31,11 @@ public class GoofySillyGoofyItem extends AbstractCustomItem {
                 .alwaysEdible()
                 .nutrition(30)
                 .saturationModifier(3)
-                .usingConvertsTo(Items.NETHERITE_BLOCK)
                 .alwaysEdible()
                 .build()
         );
-        addComponent(DataComponentTypes.FIRE_RESISTANT, Unit.INSTANCE);
+        addComponent(DataComponentTypes.USE_REMAINDER, new UseRemainderComponent(Items.NETHERITE_BLOCK.getDefaultStack()));
+        addComponent(DataComponentTypes.DAMAGE_RESISTANT, new DamageResistantComponent(DamageTypeTags.IS_FIRE));
     }
 
     @Override

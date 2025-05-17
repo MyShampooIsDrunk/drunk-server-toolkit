@@ -1,9 +1,6 @@
 package myshampooisdrunk.drunk_server_toolkit.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomItemHelper;
-import myshampooisdrunk.drunk_server_toolkit.item.CustomToolItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -13,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Item.class)
 public abstract class ItemMixin{
 	@Inject(at = @At("HEAD"), method = "use",cancellable = true)
-	private void useItem(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+	private void useItem(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
 		ItemStack item = user.getStackInHand(hand);
 //		CustomEnchantmentHelper.getEnchantmentList(item).forEach((enchant, level)->{
 //			enchant.onUse(world, user, hand,level,cir);
@@ -33,8 +29,8 @@ public abstract class ItemMixin{
 	}
 
 	@Inject(at=@At("HEAD"),method = "onStoppedUsing", cancellable = true)
-	private void afterStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
-		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.onStoppedUsing(stack,world,user,remainingUseTicks,ci));
+	private void afterStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfoReturnable<Boolean> cir) {
+		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.onStoppedUsing(stack,world,user,remainingUseTicks,cir));
 //		CustomEnchantmentHelper.getEnchantmentList(stack).forEach((enchant, level)->{
 //			enchant.onStoppedUsing(stack,world,user,remainingUseTicks);
 //		});
@@ -43,14 +39,14 @@ public abstract class ItemMixin{
 	public void getMaxUseTime(ItemStack stack, LivingEntity user, CallbackInfoReturnable<Integer> cir){
 		CustomItemHelper.getCustomItem(stack).ifPresent(c -> cir.setReturnValue(c.getMaxUseTime(stack,user)));
 	}
-	@ModifyReturnValue(method = "canRepair", at=@At("RETURN"))
-    private boolean canRepairCustom(boolean original, @Local(ordinal = 0, argsOnly = true) ItemStack stack,
-									@Local(ordinal = 1, argsOnly = true) ItemStack ingredient){
-		if(CustomItemHelper.getCustomItem(stack).orElse(null) instanceof CustomToolItem tool) {
-			return original || tool.getMaterial().getRepairIngredient().test(ingredient);
-		}
-		return original;
-	}
+//	@ModifyReturnValue(method = "canRepair", at=@At("RETURN"))
+//    private boolean canRepairCustom(boolean original, @Local(ordinal = 0, argsOnly = true) ItemStack stack,
+//									@Local(ordinal = 1, argsOnly = true) ItemStack ingredient){
+//		if(CustomItemHelper.getCustomItem(stack).orElse(null) instanceof CustomToolItem tool) {
+//			return original || tool.getMaterial().getRepairIngredient().test(ingredient);
+//		}
+//		return original;
+//	} can be done with components now!!!
 	@Inject(at=@At("HEAD"), method = "finishUsing", cancellable = true)
 	public void finishUsingCustom(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir){
 		CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.finishUsing(stack,world,user,cir));

@@ -46,9 +46,5 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
         CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onEntityInteraction(user,entity,hand,cir));
     }
-    @Inject(at=@At("HEAD"),method="jump", cancellable = true)
-    private void jump(CallbackInfo ci) {
-        ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
-        CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onJump(user,ci));
-    }
+
 }

@@ -43,7 +43,7 @@ public record CustomPotion(Identifier id, boolean translatable, @Nullable String
                 effects.add(new StatusEffectInstance(eff, func.apply(durLvl, potency, type) * (type == PotionType.LINGER ? 4:1), potency)));
         components.add(DataComponentTypes.ITEM_NAME, name);
         components.add(DataComponentTypes.POTION_CONTENTS,
-                new PotionContentsComponent(basePotion, customColor, effects));
+                new PotionContentsComponent(basePotion, customColor, effects, Optional.ofNullable(itemName)));
         ret.applyComponentsFrom(components.build());
         return ret;
     }

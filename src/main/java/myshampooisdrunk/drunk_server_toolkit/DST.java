@@ -4,10 +4,14 @@ import myshampooisdrunk.drunk_server_toolkit.command.CustomGiveCommand;
 import myshampooisdrunk.drunk_server_toolkit.command.GivePotionCommand;
 import myshampooisdrunk.drunk_server_toolkit.component.EntityMultiblockData;
 import myshampooisdrunk.drunk_server_toolkit.component.ItemDisplayEntityMultiblockCoreData;
+import myshampooisdrunk.drunk_server_toolkit.example.CustomPotionRegistryExample;
+import myshampooisdrunk.drunk_server_toolkit.example.GoofySillyGoofyItem;
+import myshampooisdrunk.drunk_server_toolkit.example.HopefullyThisItemWorks;
 import myshampooisdrunk.drunk_server_toolkit.example.multiblock.MultiblockRegistryExample;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipeItem;
 import myshampooisdrunk.drunk_server_toolkit.item.potion.CustomPotion;
+import myshampooisdrunk.drunk_server_toolkit.register.CustomItemRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -30,7 +34,7 @@ public static final ComponentKey<EntityMultiblockData> ENTITY_MULTIBLOCK_DATA_CO
 	public static final ComponentKey<ItemDisplayEntityMultiblockCoreData> MULTIBLOCK_CORE_DATA_COMPONENT_KEY = ComponentRegistry.getOrCreate(
 			id("multiblock_core_data"), ItemDisplayEntityMultiblockCoreData.class);
 	public static final Set<AbstractCustomItem> ITEMS = new HashSet<>();
-	public static final Map<Item,Integer> MODEL_COUNT = new HashMap<>();
+//	public static final Map<Item,Integer> MODEL_COUNT = new HashMap<>();
 	public static final Set<CustomRecipeItem<?>> RECIPES = new HashSet<>();
 	public static final Map<Recipe<?>, Identifier> ITEM_RECIPES = new HashMap<>();
 	public static final Map<Identifier, CustomPotion> POTIONS = new HashMap<>();
@@ -57,19 +61,16 @@ public static final ComponentKey<EntityMultiblockData> ENTITY_MULTIBLOCK_DATA_CO
 
 	@Override
 	public void onInitialize() {
-//		MultiblockRegistryExample.init();
-//		CustomPotionRegistryExample.init();
-//		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
-//		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
-//		AbstractCustomItem gijaietgjhjoerhkitjaeigjsirjnthij = new RandomToolItemCustomVeryVeryFastCustomCustomCustomCustom();//what the fuck is going on in this one line lmao
-//		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
-//		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
-//		CustomItemRegistry.registerItem(gijaietgjhjoerhkitjaeigjsirjnthij);
-//		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb2, ItemGroups.COMBAT);
-//		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb, ItemGroups.COMBAT);
-//		CustomItemRegistry.addToGroup(gijaietgjhjoerhkitjaeigjsirjnthij, ItemGroups.BUILDING_BLOCKS);
-//		initializeRecipes();
-//		CustomItemRegistry.addCustomEnchants(ItemGroups.COMBAT);
+		MultiblockRegistryExample.init();
+		CustomPotionRegistryExample.init();
+		AbstractCustomItem bbbbbbbbbbbbbbbbbb = new GoofySillyGoofyItem();
+		AbstractCustomItem bbbbbbbbbbbbbbbbbb2 = new HopefullyThisItemWorks();
+		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb);
+		CustomItemRegistry.registerItem(bbbbbbbbbbbbbbbbbb2);
+		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb2, ItemGroups.COMBAT);
+		CustomItemRegistry.addToGroup(bbbbbbbbbbbbbbbbbb, ItemGroups.COMBAT);
+		initializeRecipes();
+
 		initializeCommands();
 	}
 

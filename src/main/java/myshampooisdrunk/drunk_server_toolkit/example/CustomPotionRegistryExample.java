@@ -21,33 +21,33 @@ import net.minecraft.util.Identifier;
 import java.util.Optional;
 
 public class CustomPotionRegistryExample {
-//    public static final CustomPotion potionOfBaldness = CustomPotion.builder()
-//            .addEffect(
-//                    (dur, pot, type) -> 1000 * (pot+1),
-//                    StatusEffects.BLINDNESS
-//            )
-//            .color(1234567890)
-//            .name("potion of super brain rot")
-//            .textModifier((text, potion) -> ((MutableText)text).setStyle(
-//                    Style.EMPTY
-//                            .withBold(true)
-//                            .withColor(-8583859)
-//                            .withItalic(true)
-//                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-//                                    Text.literal("xiaohongshu!!!")))
-//            ))
-//            .build(Identifier.of("example_mod","baldness"));
-//    public static void init() {
-//        potionOfBaldness.registerBrewingRecipes(Potions.INFESTED, CustomIngredient.ofStacks(
-//                new GoofySillyGoofyItem().create(), Items.FURNACE.getDefaultStack(), Items.CHORUS_FRUIT.getDefaultStack()));
-//        potionOfBaldness.registerBrewingRecipes(
-//                Optional.of(CustomIngredient.ofStacks(Items.DIAMOND_SWORD.getDefaultStack())),
-//                Optional.of(CustomIngredient.ofStacks(Items.ENCHANTED_GOLDEN_APPLE.getDefaultStack())),
-//                Optional.of(CustomIngredient.ofStacks(Items.TURTLE_SPAWN_EGG.getDefaultStack(), Items.ACACIA_BOAT.getDefaultStack())),
-//                CustomIngredient.ofStacks(
-//                        new GoofySillyGoofyItem().create(),
-//                        Items.FURNACE.getDefaultStack(),
-//                        Items.CHORUS_FRUIT.getDefaultStack()
-//                ));
-//    }
+    public static final CustomPotion potionOfBaldness = CustomPotion.builder()
+            .addEffect(
+                    (dur, pot, type) -> 1000 * (pot+1),
+                    StatusEffects.BLINDNESS
+            )
+            .color(1234567890)
+            .name("potion of super brain rot")
+            .textModifier((text, potion) -> ((MutableText)text).setStyle(
+                    Style.EMPTY
+                            .withBold(true)
+                            .withColor(-8583859)
+                            .withItalic(true)
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    Text.literal("xiaohongshu!!!")))
+            ))
+            .build(Identifier.of("example_mod","baldness"));
+    public static void init() {
+        potionOfBaldness.registerBrewingRecipes(Potions.INFESTED, CustomIngredient.ofStacks(
+                new GoofySillyGoofyItem().create(), Items.FURNACE.getDefaultStack(), Items.CHORUS_FRUIT.getDefaultStack()));
+        potionOfBaldness.registerBrewingRecipes(
+                Optional.of(CustomIngredient.ofStacks(Items.DIAMOND_SWORD.getDefaultStack())),
+                Optional.of(CustomIngredient.ofStacks(Items.ENCHANTED_GOLDEN_APPLE.getDefaultStack())),
+                Optional.of(CustomIngredient.ofStacks(Items.TURTLE_SPAWN_EGG.getDefaultStack(), Items.ACACIA_BOAT.getDefaultStack())),
+                CustomIngredient.ofStacks(
+                        new GoofySillyGoofyItem().create(),
+                        Items.FURNACE.getDefaultStack(),
+                        Items.CHORUS_FRUIT.getDefaultStack()
+                ));
+    }
 }
