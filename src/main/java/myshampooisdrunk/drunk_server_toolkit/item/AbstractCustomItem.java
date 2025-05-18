@@ -1,5 +1,6 @@
 package myshampooisdrunk.drunk_server_toolkit.item;
 
+import com.mojang.datafixers.util.Either;
 import myshampooisdrunk.drunk_server_toolkit.DST;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.ComponentMap;
@@ -31,6 +32,7 @@ import java.util.Optional;
 public abstract class AbstractCustomItem{
     private final ComponentMap.Builder components;
     private final CustomModelDataComponent customModelData;
+    private final Identifier customModelId;
     protected final String key;
     protected final Item item;
     protected final Identifier identifier;
@@ -41,12 +43,27 @@ public abstract class AbstractCustomItem{
     public AbstractCustomItem(Item item, Identifier identifier, @Nullable String itemName) {
         this(item,identifier,itemName, null);
     }
-    protected AbstractCustomItem(Item item, Identifier identifier, String itemName, @Nullable CustomModelDataComponent customModelData) {
+    protected AbstractCustomItem(Item item, Identifier identifier, String itemName, @Nullable Either<CustomModelDataComponent, Identifier> customModelData) {
         this.identifier=identifier;
         this.key=itemName;
         this.item = item;
         this.components = ComponentMap.builder();
-        this.customModelData = customModelData;
+        if(customModelData == null) {
+            this.customModelData = null;
+            this.customModelId = null;
+        } else {
+            if(customModelData.left().isPresent()) {
+                this.customModelData = customModelData.left().get();
+                this.customModelId = null;
+            } else if(customModelData.right().isPresent()){
+                this.customModelId = customModelData.right().get();
+                this.customModelData = null;
+            } else {
+                this.customModelData = null;
+                this.customModelId = null;
+            }
+
+        }
 //        if(customModelData != null) addComponent(DataComponentTypes.CUSTOM_MODEL_DATA, customModelData);
     }
     public Item getItem(){return item;}
@@ -63,7 +80,9 @@ public abstract class AbstractCustomItem{
         ItemStack ret = new ItemStack(item);
         ret.set(DataComponentTypes.ITEM_NAME, t);
         ret.set(DataComponentTypes.CUSTOM_DATA,NbtComponent.of(getCustomNbt()));
-        if(customModelData != null) ret.set(DataComponentTypes.CUSTOM_MODEL_DATA,customModelData);
+        if(customModelData != null) {
+            ret.set(DataComponentTypes.CUSTOM_MODEL_DATA, customModelData);
+        } else if(customModelId != null) ret.set(DataComponentTypes.ITEM_MODEL, customModelId); //holy shit i love this update
         ret.applyComponentsFrom(components.build());
         return ret;
     }
