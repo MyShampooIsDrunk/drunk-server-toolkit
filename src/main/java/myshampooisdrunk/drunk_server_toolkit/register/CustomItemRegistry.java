@@ -17,10 +17,13 @@ public class CustomItemRegistry {
         return item;
     }
 
-    public static <T extends RecipeInput> AbstractCustomItem registerWithRecipe(AbstractRecipeItem<T> recipeItem) {
-        registerItem(recipeItem);
+    public static <T extends RecipeInput> AbstractCustomItem registerWithRecipe(CustomRecipe<T> recipeItem) {
+        if(recipeItem instanceof AbstractCustomItem item) {
+            registerItem(item);
+            return item;
+        }
         DST.RECIPES.add(recipeItem);
-        return recipeItem;
+        return null;
     }
 
     public static void registerRecipe(Recipe<?> recipe, Identifier id){

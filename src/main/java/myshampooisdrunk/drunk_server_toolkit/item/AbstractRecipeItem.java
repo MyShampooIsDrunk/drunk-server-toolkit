@@ -8,25 +8,19 @@ import net.minecraft.recipe.input.RecipeInput;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-public class AbstractRecipeItem<T extends RecipeInput> extends AbstractCustomItem implements CustomRecipe<T>{
-    private final Recipe<T> recipe;
-    public AbstractRecipeItem(Item item, Identifier identifier, Recipe<T> recipe) {
+public abstract class AbstractRecipeItem<T extends RecipeInput> extends AbstractCustomItem implements CustomRecipe<T>{
+     public AbstractRecipeItem(Item item, Identifier identifier) {
         super(item, identifier);
-        this.recipe = recipe;
     }
 
     public AbstractRecipeItem(Item item, Identifier identifier, @Nullable String itemName, Recipe<T> recipe) {
         super(item, identifier, itemName);
-        this.recipe = recipe;
     }
 
     protected AbstractRecipeItem(Item item, Identifier identifier, String itemName, @Nullable Either<CustomModelDataComponent, Identifier> customModelData, Recipe<T> recipe) {
         super(item, identifier, itemName, customModelData);
-        this.recipe = recipe;
     }
 
     @Override
-    public Recipe<T> recipe() {
-        return recipe;
-    }
+    public abstract Recipe<T> recipe();
 }
