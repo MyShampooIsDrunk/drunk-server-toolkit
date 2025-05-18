@@ -13,11 +13,11 @@ public abstract class AbstractRecipeItem<T extends RecipeInput> extends Abstract
         super(item, identifier);
     }
 
-    public AbstractRecipeItem(Item item, Identifier identifier, @Nullable String itemName, Recipe<T> recipe) {
+    public AbstractRecipeItem(Item item, Identifier identifier, @Nullable String itemName) {
         super(item, identifier, itemName);
     }
 
-    protected AbstractRecipeItem(Item item, Identifier identifier, String itemName, @Nullable Either<CustomModelDataComponent, Identifier> customModelData, Recipe<T> recipe) {
+    protected AbstractRecipeItem(Item item, Identifier identifier, String itemName, @Nullable Either<CustomModelDataComponent, Identifier> customModelData) {
         super(item, identifier, itemName, customModelData);
     }
 
