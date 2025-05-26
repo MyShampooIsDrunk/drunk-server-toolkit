@@ -5,6 +5,7 @@ import myshampooisdrunk.drunk_server_toolkit.component.MultiblockCoreData;
 import myshampooisdrunk.drunk_server_toolkit.component.MultiblockData;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.AbstractMultiblockStructureEntity;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockCoreEntity;
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -25,7 +26,7 @@ public class MultiblockStructure {
     private static final Block FILLER_BLOCK = Blocks.STRUCTURE_VOID;
     private final Map<BlockPos, Block> blockList;
     private final Map<BlockPos, TagKey<Block>> blockTagList;
-    private final Map<Vec3d, AbstractMultiblockStructureEntity<?>> entityList;
+    private final Map<AbstractMultiblockStructureEntity<?>, Vec3d> entityList;
     private UUID multiblockUUID;
     private Box structureBox; //used to detect the multiblock and remove it
     private final Identifier id;
@@ -112,7 +113,7 @@ public class MultiblockStructure {
             entityBox = new Box(
                     Math.max(entityBox.maxX,relative.x),Math.max(entityBox.maxY,relative.y), Math.max(entityBox.maxZ,relative.z),
                     Math.min(entityBox.minX,relative.x), Math.min(entityBox.minY,relative.y),Math.min(entityBox.minZ,relative.z));
-        entityList.put(relative,entity);
+        entityList.put(entity, relative);
         return this;
     }
 
@@ -178,7 +179,7 @@ public class MultiblockStructure {
             world.setBlockState(blockPos, FILLER_BLOCK.getDefaultState());
         }
 
-        entityList.forEach((vec, ent) -> {
+        entityList.forEach((ent, vec) -> {
             Entity e;
             if(ent instanceof MultiblockCoreEntity core){
                 DisplayEntity.ItemDisplayEntity coreEntity = core.create(world, this, pos, vec);
@@ -199,7 +200,7 @@ public class MultiblockStructure {
     }
 
     public void remove(ServerWorld world, BlockPos pos) {
-        List<? extends EntityType<?>> types = entityList.values().stream()
+        List<? extends EntityType<?>> types = entityList.keySet().stream()
                 .map(AbstractMultiblockStructureEntity::getType).toList();
 
         List<Entity> entities = new ArrayList<>();
@@ -225,7 +226,7 @@ public class MultiblockStructure {
     }
 
     public UUID getCoreEntityUUID(ServerWorld world, BlockPos pos) {
-        List<? extends EntityType<?>> types = entityList.values().stream()
+        List<? extends EntityType<?>> types = entityList.keySet().stream()
                 .map(AbstractMultiblockStructureEntity::getType).toList();
         List<Entity> entities = new ArrayList<>();
         types.forEach(t -> entities.addAll(world.getEntitiesByType(
