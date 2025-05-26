@@ -194,11 +194,6 @@ public class MultiblockStructure {
 
     }
 
-    public static <E> E echo(E e){
-        System.out.println(e);
-        return e;
-    }
-
     public void remove(ServerWorld world, BlockPos pos) {
         List<? extends EntityType<?>> types = entityList.keySet().stream()
                 .map(AbstractMultiblockStructureEntity::getType).toList();
@@ -206,11 +201,11 @@ public class MultiblockStructure {
         List<Entity> entities = new ArrayList<>();
         UUID coreUUID = this.getCoreEntityUUID(world, pos);
         if (coreUUID == null) return;
-        System.out.println(coreUUID);
+//        System.out.println(coreUUID);
         types.forEach(t -> entities.addAll(world.getEntitiesByType(
                 t,
                 entityBox.offset(pos).expand(1),
-                e -> coreUUID.equals(echo(e.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY).getUUID()))))
+                e -> coreUUID.equals(e.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY).getUUID())))
         );
         for (Entity e : entities) {
             if(e instanceof DisplayEntity.ItemDisplayEntity core) {

@@ -60,7 +60,7 @@ public abstract class BlockMixin extends AbstractBlock {
                         checked.add(id);
                         MultiblockStructure str;
                         if ((str = MultiblockRegistry.STRUCTURES.get(id)).detectBuiltMultiblock(sWorld, pos)) {
-                            System.out.println("prebuilt shit alr detected yk");
+//                            System.out.println("prebuilt shit alr detected yk");
                             str.remove(sWorld, pos);
                             return;
                         }
