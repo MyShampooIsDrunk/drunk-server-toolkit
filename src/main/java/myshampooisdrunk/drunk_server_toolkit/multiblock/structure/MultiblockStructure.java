@@ -2,10 +2,9 @@ package myshampooisdrunk.drunk_server_toolkit.multiblock.structure;
 
 import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.component.MultiblockCoreData;
-import myshampooisdrunk.drunk_server_toolkit.component.MultiblockData;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.AbstractMultiblockStructureEntity;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockCoreEntity;
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,7 +17,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 import java.util.*;
 
@@ -27,11 +25,11 @@ public class MultiblockStructure {
     private final Map<BlockPos, Block> blockList;
     private final Map<BlockPos, TagKey<Block>> blockTagList;
     private final Map<AbstractMultiblockStructureEntity<?>, Vec3d> entityList;
-    private UUID multiblockUUID;
-    private Box structureBox; //used to detect the multiblock and remove it
+    protected UUID multiblockUUID;
+    protected Box structureBox; //used to detect the multiblock and remove it
     private final Identifier id;
     private final Set<Block> controllers;
-    private Box entityBox;
+    protected Box entityBox;
 
     public MultiblockStructure(Identifier id, Set<Block> controllers) {
         this.controllers = controllers;
@@ -52,6 +50,7 @@ public class MultiblockStructure {
         entityList = new HashMap<>();
         multiblockUUID = UUID.randomUUID();
         structureBox = Box.of(Vec3d.ZERO,0,0,0);
+        entityBox = new Box(Vec3d.ZERO, Vec3d.ZERO);
         this.id = id;
     }
 
