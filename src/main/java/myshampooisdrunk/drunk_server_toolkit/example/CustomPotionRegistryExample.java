@@ -33,8 +33,6 @@ public class CustomPotionRegistryExample {
                             .withBold(true)
                             .withColor(-8583859)
                             .withItalic(true)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    Text.literal("xiaohongshu!!!")))
             ))
             .build(Identifier.of("example_mod","baldness"));
     public static void init() {

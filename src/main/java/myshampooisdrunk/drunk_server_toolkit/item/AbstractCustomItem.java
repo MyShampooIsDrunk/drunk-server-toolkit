@@ -11,6 +11,7 @@ import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
@@ -44,8 +46,8 @@ public abstract class AbstractCustomItem{
         this(item,identifier,itemName, null);
     }
     protected AbstractCustomItem(Item item, Identifier identifier, String itemName, @Nullable Either<CustomModelDataComponent, Identifier> customModelData) {
-        this.identifier=identifier;
-        this.key=itemName;
+        this.identifier = identifier;
+        this.key = itemName;
         this.item = item;
         this.components = ComponentMap.builder();
         if(customModelData == null) {
@@ -95,12 +97,11 @@ public abstract class AbstractCustomItem{
         return Optional.ofNullable(customModelData);
     }
 
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
+    public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, EquipmentSlot slot, CallbackInfo ci) {
     }
     public void onCraft(ItemStack stack, World world, CallbackInfo ci) {
     }
-    public void onCraftByPlayer(ItemStack stack, World world, PlayerEntity player, CallbackInfo ci) {
-        this.onCraft(stack, world, ci);
+    public void onCraftByPlayer(ItemStack stack, PlayerEntity player, CallbackInfo ci) {
     }
     public int getMaxUseTime(ItemStack stack, LivingEntity entity) {
         ConsumableComponent consumableComponent = stack.get(DataComponentTypes.CONSUMABLE);
@@ -152,7 +153,7 @@ public abstract class AbstractCustomItem{
     }
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks, CallbackInfo ci) {
     }
-    public void postDrop(PlayerEntity user, ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
+    public void postDrop(PlayerEntity user, ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
     }
     public void postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfo ci) {
     }

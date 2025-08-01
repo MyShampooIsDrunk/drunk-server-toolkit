@@ -27,7 +27,6 @@ public class ExampleMultiblockEntity extends AbstractMultiblockStructureEntity<W
 
     @Override
     public void onPlayerCollision(PlayerEntity player, Entity me, CallbackInfo ci) {
-        super.onPlayerCollision(player, me, ci);
         player.setVelocity(0, 3, 0);
     }
 }

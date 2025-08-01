@@ -105,7 +105,7 @@ public abstract class AbstractMultiblockStructureEntity<E extends Entity> {
     public void damage(ServerWorld world, DamageSource source, float amount, Entity me, CallbackInfoReturnable<Boolean> cir) {
     }
 
-    public void takeShieldHit(LivingEntity attacker, Entity me, CallbackInfo ci){
+    public void takeShieldHit(ServerWorld world, LivingEntity attacker, Entity me, CallbackInfo ci){
     }
 
     public void tryUseTotem(DamageSource source, Entity me, CallbackInfoReturnable<Boolean> cir){

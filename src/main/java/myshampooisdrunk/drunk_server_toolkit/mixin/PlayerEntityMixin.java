@@ -30,9 +30,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             custom.postHit(item, target, this, ci);
         });
     }
-    @Inject(at=@At("HEAD"),method="dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;")
-    private void dropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
-        CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postDrop(user, stack, throwRandomly, retainOwnership, cir));
+    @Inject(at=@At("HEAD"),method="dropItem")
+    private void dropItem(ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
+        CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postDrop(user, stack, retainOwnership, cir));
     }
     @Inject(at=@At("HEAD"),method="tick", cancellable = true)
     public void whileSneaking(CallbackInfo ci){

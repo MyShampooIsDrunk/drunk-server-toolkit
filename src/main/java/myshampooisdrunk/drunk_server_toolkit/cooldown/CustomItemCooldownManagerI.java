@@ -1,5 +1,5 @@
 package myshampooisdrunk.drunk_server_toolkit.cooldown;
 
 public interface CustomItemCooldownManagerI {
-    public CustomItemCooldownManager getCustomItemCooldownManager();
+    public CustomItemCooldownManager drunk_server_toolkit$getCustomItemCooldownManager();
 }

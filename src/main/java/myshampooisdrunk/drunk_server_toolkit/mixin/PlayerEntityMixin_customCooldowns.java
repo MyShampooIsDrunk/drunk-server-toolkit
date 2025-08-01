@@ -17,7 +17,7 @@ public abstract class PlayerEntityMixin_customCooldowns extends LivingEntity imp
     @Unique
     private final CustomItemCooldownManager manager = new CustomItemCooldownManager();
     @Override
-    public CustomItemCooldownManager getCustomItemCooldownManager(){
+    public CustomItemCooldownManager drunk_server_toolkit$getCustomItemCooldownManager(){
         return manager;
     }
     @Inject(at=@At(value="INVOKE",target = "Lnet/minecraft/entity/player/ItemCooldownManager;update()V"),method="tick")

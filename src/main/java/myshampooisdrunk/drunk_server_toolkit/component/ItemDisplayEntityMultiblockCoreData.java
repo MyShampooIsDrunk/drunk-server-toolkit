@@ -13,6 +13,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -37,27 +39,23 @@ public class ItemDisplayEntityMultiblockCoreData implements MultiblockCoreData{
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        RegistryEntryLookup<Block> lookup = this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK);
-        NbtList list = tag.getList("blocks", NbtElement.COMPOUND_TYPE);
-        for (int i = 0; i < list.size(); i++) {
-            NbtCompound pair = list.getCompound(i);
-            BlockPos pos = NbtHelper.toBlockPos(pair, "pos").orElseThrow();
-            BlockState state = NbtHelper.toBlockState(lookup, pair.getCompound("block"));
+    public void readData(ReadView readView) {
+        for (ReadView block : readView.getListReadView("blocks")) {
+            BlockPos pos = block.read("pos",BlockPos.CODEC).orElseThrow();
+            BlockState state = block.read("block",BlockState.CODEC).orElseThrow();
             initialStates.put(pos, state);
         }
     }
 
     @Override
-    public void writeToNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        NbtList list = new NbtList();
+    public void writeData(WriteView writeView) {
+
+        WriteView.ListView list = writeView.getList("blocks");
         initialStates.forEach((pos, state) -> {
-            NbtCompound pair = new NbtCompound();
-            pair.put("pos", NbtHelper.fromBlockPos(pos));
-            pair.put("block", NbtHelper.fromBlockState(state));
-            list.add(pair);
+            WriteView pair = list.add();
+            pair.put("pos", BlockPos.CODEC, pos);
+            pair.put("block", BlockState.CODEC, state);
         });
-        tag.put("blocks", list);
     }
 
     public Map<BlockPos, BlockState> getBlockstateData() {

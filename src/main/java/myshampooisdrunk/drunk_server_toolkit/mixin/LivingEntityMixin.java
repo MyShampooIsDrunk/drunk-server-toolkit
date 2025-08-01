@@ -35,13 +35,13 @@ public abstract class LivingEntityMixin extends Entity{
     }
 
     @Inject(at=@At("HEAD"), method = "takeShieldHit", cancellable = true)
-    public void injectMultiblockEntityTakeShieldHit(LivingEntity attacker, CallbackInfo ci){
+    public void injectMultiblockEntityTakeShieldHit(ServerWorld world, LivingEntity attacker, CallbackInfo ci){
         if(!getWorld().isClient()) {
             String id;
             MultiblockData data = this.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY);
             if ((id = data.getEntityId()) != null) {
                 AbstractMultiblockStructureEntity<? extends Entity> structureEntity = MultiblockRegistry.ENTITY_TYPES.get(id).defaultEntity();
-                structureEntity.takeShieldHit(attacker, this, ci);
+                structureEntity.takeShieldHit(world, attacker, this, ci);
             }
         }
     }
