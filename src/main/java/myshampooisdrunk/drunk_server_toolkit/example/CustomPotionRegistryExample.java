@@ -2,20 +2,11 @@ package myshampooisdrunk.drunk_server_toolkit.example;
 
 import myshampooisdrunk.drunk_server_toolkit.item.potion.CustomPotion;
 import myshampooisdrunk.drunk_server_toolkit.recipe.CustomIngredient;
-import myshampooisdrunk.drunk_server_toolkit.recipe.potion.CustomBrewingRecipe;
-import myshampooisdrunk.drunk_server_toolkit.register.CustomBrewingRecipeRegistry;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;

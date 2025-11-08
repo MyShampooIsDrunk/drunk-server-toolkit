@@ -3,17 +3,19 @@
   "package": "myshampooisdrunk.drunk_server_toolkit.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ArmorStandEntityInvoker",
     "BlockMixin",
     "BrewingRecipeRegistryMixin",
     "BrewingStandBlockEntityMixin",
     "BrewingStandScreenHandlerMixin",
     "EntityMixin",
-    "ItemDisplayEntityInvoker",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
-    "PlayerEntityMixin_customCooldowns"
+    "PlayerEntityMixin_customCooldowns",
+    "ServerChunkLoadingManagerMixin",
+    "WorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

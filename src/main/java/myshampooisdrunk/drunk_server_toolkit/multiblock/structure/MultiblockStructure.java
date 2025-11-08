@@ -1,242 +1,211 @@
 package myshampooisdrunk.drunk_server_toolkit.multiblock.structure;
 
 import myshampooisdrunk.drunk_server_toolkit.DST;
-import myshampooisdrunk.drunk_server_toolkit.component.MultiblockCoreData;
-import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.AbstractMultiblockStructureEntity;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockCoreEntity;
-
+import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockEntity;
+import myshampooisdrunk.drunk_server_toolkit.world.MultiblockCacheI;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.decoration.DisplayEntity;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class MultiblockStructure {
-    private static final Block FILLER_BLOCK = Blocks.STRUCTURE_VOID;
-    private final Map<BlockPos, Block> blockList;
-    private final Map<BlockPos, TagKey<Block>> blockTagList;
-    private final Map<AbstractMultiblockStructureEntity<?>, Vec3d> entityList;
-    protected UUID multiblockUUID;
-    protected Box structureBox; //used to detect the multiblock and remove it
-    private final Identifier id;
-    private final Set<Block> controllers;
-    protected Box entityBox;
+public abstract class MultiblockStructure {
+    public static final Transformation SOUTH = (x,y,z) -> new Vec3i(z,y,-x);
+    public static final Transformation EAST = Vec3i::new;
+    public static final Transformation WEST = (x,y,z) -> new Vec3i(-x,y,-z);
+    public static final Transformation NORTH = (x,y,z) -> new Vec3i(-z,y,x);
 
-    public MultiblockStructure(Identifier id, Set<Block> controllers) {
-        this.controllers = controllers;
-        blockList = new HashMap<>();
-        blockTagList = new HashMap<>();
-        entityList = new HashMap<>();
-        multiblockUUID = UUID.randomUUID();
-        structureBox = Box.of(Vec3d.ZERO,0,0,0);
-        entityBox = new Box(Vec3d.ZERO, Vec3d.ZERO);
-        this.id = id;
+    protected final MultiblockStructureType<?> type;
+    protected final MultiblockCoreEntity core;
+    protected final Map<BlockPos, BlockState> structureBlocks;
+    protected final World world;
+
+    public MultiblockStructure(MultiblockStructureType<?> type, MultiblockCoreEntity core) {
+        this.type = type;
+        this.core = core;
+        this.world = core.getWorld();
+        this.structureBlocks = new HashMap<>();
     }
 
-    public MultiblockStructure(Identifier id, Block controller) {
-        controllers = new HashSet<>();
-        controllers.add(controller);
-        blockList = new HashMap<>();
-        blockTagList = new HashMap<>();
-        entityList = new HashMap<>();
-        multiblockUUID = UUID.randomUUID();
-        structureBox = Box.of(Vec3d.ZERO,0,0,0);
-        entityBox = new Box(Vec3d.ZERO, Vec3d.ZERO);
-        this.id = id;
+    public MultiblockCoreEntity getCore() {
+        return core;
     }
 
-    public MultiblockStructure setCore(MultiblockCoreEntity core){
-        this.attachEntity(new Vec3d(0,1,0), core);
-        return this;
-    }
-
-    protected void addController(Block controller) {
-        controllers.add(controller);
-    }
-
-    public Collection<Block> getControllerBlocks() {
-        return controllers;
-    }
-
-    public UUID getUUID(){
-        return multiblockUUID;
-    }
-
-    public Identifier id() {
-        return id;
-    }
-
-    public Box relativeBox() {
-        return structureBox;
-    }
-
-    public MultiblockStructure addBlock(BlockPos relative, Block block) {
-        if(relative.equals(new BlockPos(0,0,0))) return this;
-        blockList.put(relative,block);
-        if (!structureBox.contains(relative.getX(), relative.getY(), relative.getZ()))
-            structureBox = new Box(Math.max(structureBox.maxX,relative.getX()),Math.max(structureBox.maxY,relative.getY()),
-                    Math.max(structureBox.maxZ,relative.getZ()),Math.min(structureBox.minX,relative.getX()),
-                    Math.min(structureBox.minY,relative.getY()),Math.min(structureBox.minZ,relative.getZ()));
-        return this;
-    }
-
-    public MultiblockStructure addBlock(BlockPos relative, TagKey<Block> tag) {
-        if(relative.equals(new BlockPos(0,0,0))) return this;
-        blockTagList.put(relative,tag);
-        if (!structureBox.contains(relative.getX(), relative.getY(), relative.getZ()))
-            structureBox = new Box(Math.max(structureBox.maxX,relative.getX()),Math.max(structureBox.maxY,relative.getY()),
-                    Math.max(structureBox.maxZ,relative.getZ()),Math.min(structureBox.minX,relative.getX()),
-                    Math.min(structureBox.minY,relative.getY()),Math.min(structureBox.minZ,relative.getZ()));
-        return this;
-    }
-
-    public MultiblockStructure addBlock(int x, int y, int z, Block block) {
-        return this.addBlock(new BlockPos(x,y,z), block);
-    }
-
-    public MultiblockStructure addBlock(int x, int y, int z, TagKey<Block> tag) {
-        return this.addBlock(new BlockPos(x,y,z), tag);
-    }
-
-    public MultiblockStructure attachEntity(Vec3d relative, AbstractMultiblockStructureEntity<?> entity) {
-        if (!entityBox.contains(relative))
-            entityBox = new Box(
-                    Math.max(entityBox.maxX,relative.x),Math.max(entityBox.maxY,relative.y), Math.max(entityBox.maxZ,relative.z),
-                    Math.min(entityBox.minX,relative.x), Math.min(entityBox.minY,relative.y),Math.min(entityBox.minZ,relative.z));
-        entityList.put(entity, relative);
-        return this;
-    }
-
-    public MultiblockStructure attachEntity(BlockPos relative, AbstractMultiblockStructureEntity<?> entity) {
-        return attachEntity(new Vec3d(relative.getX(),relative.getY(),relative.getZ()), entity);
-    }
-
-    public MultiblockStructure attachEntity(double x, double y, double z, AbstractMultiblockStructureEntity<?> entity) {
-        return attachEntity(new Vec3d(x, y, z), entity);
-    }
-
-    public boolean detect(ServerWorld world, BlockPos center) {
-        for(double x = structureBox.minX; x <= structureBox.maxX; x++){
-            for(double y = structureBox.minY; y <= structureBox.maxY; y++){
-                for(double z = structureBox.minZ; z <= structureBox.maxZ; z++){
-                    if(x == 0 && y == 0 && z == 0) continue;
-                    BlockPos offset = new BlockPos((int)x,(int)y,(int)z);
-                    BlockPos pos = center.add(offset);
-                    BlockState block = world.getBlockState(pos);
-                    if(blockList.containsKey(offset) || blockTagList.containsKey(offset)) {
-                        boolean bl = false;
-                        if(blockList.containsKey(offset)) {
-                            bl |= block.isOf(blockList.get(offset));
-                        }
-                        if(blockTagList.containsKey(offset)) {
-                            bl |= block.isIn(blockTagList.get(offset));
-                        }
-                        if(!bl) return false;
-                    } else if(!block.isAir()) return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean detectBuiltMultiblock(ServerWorld world, BlockPos center) {
-        for(double x = structureBox.minX; x <= structureBox.maxX; x++){
-            for(double y = structureBox.minY; y <= structureBox.maxY; y++){
-                for(double z = structureBox.minZ; z <= structureBox.maxZ; z++){
-                    if(x == 0 && y == 0 && z == 0) continue;
-                    BlockPos offset = new BlockPos((int)x,(int)y,(int)z);
-                    BlockPos pos = center.add(offset);
-                    BlockState block = world.getBlockState(pos);
-                    if(blockList.containsKey(offset) || blockTagList.containsKey(offset)) {
-                        if(!block.isOf(FILLER_BLOCK)) return false;
-                    } else if(!block.isAir()) return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public void generate(ServerWorld world, BlockPos pos) {
-        if(world.isClient) return;
-        this.multiblockUUID = UUID.randomUUID();
-        Set<BlockPos> posSet = new HashSet<>();
-        posSet.addAll(blockTagList.keySet());
-        posSet.addAll(blockList.keySet());
-        Map<BlockPos, BlockState> initialStates = new HashMap<>();
-        for (BlockPos relative : posSet) {
-            BlockPos blockPos = relative.add(pos);
-            initialStates.put(blockPos, world.getBlockState(blockPos));
-            world.setBlockState(blockPos, FILLER_BLOCK.getDefaultState());
-        }
-
-        entityList.forEach((ent, vec) -> {
-            Entity e;
-            if(ent instanceof MultiblockCoreEntity core){
-                DisplayEntity.ItemDisplayEntity coreEntity = core.create(world, this, pos, vec);
-                MultiblockCoreData coreData = coreEntity.getComponent(DST.MULTIBLOCK_CORE_DATA_COMPONENT_KEY);
-                coreData.setBlockstateData(initialStates);
-                e = coreEntity;
-            } else {
-                e = ent.create(world, this, pos, vec);
-            }
-            boolean bl = world.spawnEntity(e);
-        });
-
-    }
-
-    public void remove(ServerWorld world, BlockPos pos) {
-        List<? extends EntityType<?>> types = entityList.keySet().stream()
-                .map(AbstractMultiblockStructureEntity::getType).toList();
-
-        List<Entity> entities = new ArrayList<>();
-        UUID coreUUID = this.getCoreEntityUUID(world, pos);
-        if (coreUUID == null) return;
-//        System.out.println(coreUUID);
-        types.forEach(t -> entities.addAll(world.getEntitiesByType(
-                t,
-                entityBox.offset(pos).expand(1),
-                e -> coreUUID.equals(e.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY).getUUID())))
+    public void destroy() {
+        structureBlocks.forEach((pos, state) ->
+            world.setBlockState(pos, state, Block.NOTIFY_LISTENERS | Block.SKIP_BLOCK_ENTITY_REPLACED_CALLBACK)
         );
-        for (Entity e : entities) {
-            if(e instanceof DisplayEntity.ItemDisplayEntity core) {
-                MultiblockCoreData coreData = core.getComponent(DST.MULTIBLOCK_CORE_DATA_COMPONENT_KEY);
-                coreData.getBlockstateData().forEach(world::setBlockState);
-            }
-            e.remove(Entity.RemovalReason.DISCARDED);
+        core.removeMultiblock();
+    }
+
+    public final Collection<UUID> getLinkedEntities() {
+        return ((MultiblockCacheI) world).drunk_server_toolkit$getLinkedEntities(core.getUuid());
+    }
+
+    public boolean spawnStructure(BlockPos pos) {
+        boolean ret = type.getTemplate().testAndThen(world, pos, p -> structureBlocks.put(p, world.getBlockState(p)));
+        if(!ret) return false;
+
+//        System.out.println("blocks: " + structureBlocks);
+
+        structureBlocks.keySet().forEach(p -> world.removeBlock(p, false));
+
+        MultiblockEntity.spawnEntity(this.core, this, pos, Vec3d.ZERO);
+
+        ((MultiblockCacheI) world).drunk_server_toolkit$spawnMultiblock(pos, core, this);
+
+        return true;
+    }
+
+    public Map<BlockPos, BlockState> getStructureBlocks() {
+        return structureBlocks;
+    }
+
+    void copyStructureBlocks(Map<BlockPos, BlockState> blocks) {
+        this.structureBlocks.clear();
+        structureBlocks.putAll(blocks);
+    }
+
+    public MultiblockStructureType<?> getType() {
+        return type;
+    }
+
+    public record Template(Map<Vec3i, Character> pattern, Map<Character, Predicate<BlockState>> keys, Set<Transformation> transformations) {
+
+        public static TemplateBuilder builder() {
+            return new TemplateBuilder();
         }
-    }
 
-    public Identifier getId(){
-        return id;
-    }
-
-    public UUID getCoreEntityUUID(ServerWorld world, BlockPos pos) {
-        List<? extends EntityType<?>> types = entityList.keySet().stream()
-                .map(AbstractMultiblockStructureEntity::getType).toList();
-        List<Entity> entities = new ArrayList<>();
-        types.forEach(t -> entities.addAll(world.getEntitiesByType(
-                t,
-                entityBox.offset(pos).expand(1),
-                e -> {
-                    if(e instanceof DisplayEntity.ItemDisplayEntity core) {
-                        MultiblockCoreData coreData = core.getComponent(DST.MULTIBLOCK_CORE_DATA_COMPONENT_KEY);
-                        return !coreData.getBlockstateData().isEmpty();
+        public static TemplateBuilder builder(char[][][] pattern, Map<Character, Predicate<BlockState>> keys, char center) {
+            TemplateBuilder ret = builder();
+            Vec3i offset = Vec3i.ZERO;
+            Map<Vec3i, Character> tempPattern = new HashMap<>();
+            for (int x = 0; x < pattern.length; x++) {
+                for (int y = 0; y < pattern[x].length; y++) {
+                    for (int z = 0; z < pattern[x][y].length; z++) {
+                        if(pattern[x][y][z] == center)
+                            offset = new Vec3i(x, y, z);
+                        else if(keys.containsKey(pattern[x][y][z]))
+                            tempPattern.put(new Vec3i(x, y, z), pattern[x][y][z]);
                     }
-                    return false;
-                }))
-        );
-        entities.sort(Comparator.comparingDouble(t -> t.squaredDistanceTo(pos.toCenterPos())));
-        if(entities.isEmpty()) return null;
-        return entities.getFirst().getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY).getUUID();
+                }
+            }
+            for (Vec3i pos : tempPattern.keySet()) {
+                Vec3i p = pos.subtract(offset);
+                ret = ret.add(p, tempPattern.get(p), keys.get(tempPattern.get(p)));
+            }
+
+            return ret;
+        }
+
+        public boolean test(BlockView world, BlockPos pos) {
+            Set<Transformation> bad = new HashSet<>();
+            for (Map.Entry<Vec3i, Character> entry : pattern.entrySet()) {
+                for (Transformation t : transformations) {
+                    if(!bad.contains(t)) {
+                        if(!keys.get(entry.getValue()).test(world.getBlockState(pos.add(t.transform(entry.getKey()))))) bad.add(t);
+                    }
+                }
+                if(bad.size() == transformations.size()) return false;
+            }
+            return true;
+
+//            for (Map.Entry<Vec3i, Character> entry : pattern.entrySet()) {
+//                if(!keys.get(entry.getValue()).test(world.getBlockState(pos.add(entry.getKey())))) return false;
+//            }
+        }
+
+        public boolean testAndThen(BlockView world, BlockPos pos, Consumer<BlockPos> consumer) {
+            Set<Transformation> bad = new HashSet<>();
+            for (Map.Entry<Vec3i, Character> entry : pattern.entrySet()) {
+                for (Transformation t : transformations) {
+                    if(!bad.contains(t)) {
+                        boolean bl = keys.get(entry.getValue()).test(world.getBlockState(pos.add(t.transform(entry.getKey()))));
+                        if(!bl) bad.add(t);
+                    }
+                }
+                if(bad.size() == transformations.size()) return false;
+            }
+            Transformation used = transformations.stream().filter(t -> !bad.contains(t)).findFirst().orElse(null);
+
+            if(used == null) return false;
+
+            pattern.keySet().forEach(p -> consumer.accept(pos.add(used.transform(p))));
+
+            return true;
+        }
+    }
+
+    public static class TemplateBuilder {
+        private final Map<Vec3i, Character> pattern;
+        private final Map<Character, Predicate<BlockState>> keys;
+        private final Set<Transformation> transformation;
+
+        private TemplateBuilder() {
+            pattern = new HashMap<>();
+            keys = new HashMap<>();
+            transformation = new HashSet<>();
+        }
+
+        public TemplateBuilder add(Vec3i relative, Character key, Predicate<BlockState> predicate) {
+            pattern.put(relative, key);
+            keys.put(key, predicate);
+            return this;
+        }
+
+        public TemplateBuilder add(int relx, int rely, int relz, Character key, Predicate<BlockState> predicate) {
+            pattern.put(new Vec3i(relx, rely, relz), key);
+            keys.put(key, predicate);
+            return this;
+        }
+
+        public TemplateBuilder transformations(Transformation... transformations) {
+            transformation.addAll(Arrays.asList(transformations));
+            return this;
+        }
+
+        public Template build() {
+            boolean t = false;
+
+            if(transformation.isEmpty()) {
+                transformation.add(EAST);
+//                t = true;
+//                DST.LOGGER.error("template has no transformations registered");
+            }
+            if(keys.isEmpty()) {
+                t = true;
+                DST.LOGGER.error("template has no blocks registered");
+            }
+
+            if(t) return null;
+
+            return new Template(pattern, keys, transformation);
+        }
+    }
+
+    @FunctionalInterface
+    public interface Transformation {
+        Vec3i transform(int x, int y, int z);
+        default Vec3i transform(Vec3i pos) {
+            return transform(pos.getX(), pos.getY(), pos.getZ());
+        }
     }
 
 }
+
+/*
+(x,y,z) ->
+E -> rel = (x,y,z)
+W -> rel = (-x,y,-z)
+N -> rel = (-z,y,x)
+S -> rel = (z,y,-x)
+*/

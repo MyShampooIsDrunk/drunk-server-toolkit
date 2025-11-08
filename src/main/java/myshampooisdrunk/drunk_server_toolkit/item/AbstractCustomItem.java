@@ -1,14 +1,12 @@
 package myshampooisdrunk.drunk_server_toolkit.item;
 
 import com.mojang.datafixers.util.Either;
-import myshampooisdrunk.drunk_server_toolkit.DST;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -140,12 +138,12 @@ public abstract class AbstractCustomItem{
 //        FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
 //        cir.setReturnValue(foodComponent != null ? user.eatFood(world, stack, foodComponent) : stack);
     }
-    public void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+    public void use(World world, LivingEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
     }
     public void useOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
         cir.setReturnValue(ActionResult.PASS);
     }
-    public void onEntityInteraction(PlayerEntity user, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
+    public void onEntityInteraction(LivingEntity user, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
     }
     public void postProcessComponents(ItemStack stack, CallbackInfo ci) {
     }
@@ -153,7 +151,7 @@ public abstract class AbstractCustomItem{
     }
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks, CallbackInfo ci) {
     }
-    public void postDrop(PlayerEntity user, ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
+    public void postDrop(LivingEntity user, ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
     }
     public void postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfo ci) {
     }

@@ -16,10 +16,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerEntityMixin_customCooldowns extends LivingEntity implements CustomItemCooldownManagerI {
     @Unique
     private final CustomItemCooldownManager manager = new CustomItemCooldownManager();
+
     @Override
     public CustomItemCooldownManager drunk_server_toolkit$getCustomItemCooldownManager(){
         return manager;
     }
+
     @Inject(at=@At(value="INVOKE",target = "Lnet/minecraft/entity/player/ItemCooldownManager;update()V"),method="tick")
     public void updateCustomEnchantMan(CallbackInfo ci){
         manager.update();

@@ -1,0 +1,11 @@
+package myshampooisdrunk.drunk_server_toolkit.mixin;
+
+import net.minecraft.entity.decoration.ArmorStandEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
+@Mixin(ArmorStandEntity.class)
+public interface ArmorStandEntityInvoker {
+    @Invoker
+    public void invokeSetMarker(boolean marker);
+}

@@ -1,4 +1,4 @@
-package myshampooisdrunk.drunk_server_toolkit.register;
+package myshampooisdrunk.drunk_server_toolkit.registry;
 
 import myshampooisdrunk.drunk_server_toolkit.recipe.potion.CustomBrewingRecipe;
 import net.minecraft.item.ItemStack;

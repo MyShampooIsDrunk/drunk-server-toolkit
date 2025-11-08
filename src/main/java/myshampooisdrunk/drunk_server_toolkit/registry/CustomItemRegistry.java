@@ -1,9 +1,8 @@
-package myshampooisdrunk.drunk_server_toolkit.register;
+package myshampooisdrunk.drunk_server_toolkit.registry;
 
 import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractRecipeItem;
-import myshampooisdrunk.drunk_server_toolkit.item.CustomRecipe;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Recipe;
@@ -12,18 +11,14 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 public class CustomItemRegistry {
-    public static AbstractCustomItem registerItem(AbstractCustomItem item) {
+    public static <T extends AbstractCustomItem> T registerItem(T item) {
         DST.ITEMS.add(item);
         return item;
     }
 
-    public static <T extends RecipeInput> AbstractCustomItem registerWithRecipe(CustomRecipe<T> recipeItem) {
-        if(recipeItem instanceof AbstractCustomItem item) {
-            registerItem(item);
-            return item;
-        }
-        DST.RECIPES.add(recipeItem);
-        return null;
+    public static <I extends RecipeInput, T extends AbstractRecipeItem<I>> T registerWithRecipe(T item) {
+        DST.RECIPES.add(item);
+        return registerItem(item);
     }
 
     public static void registerRecipe(Recipe<?> recipe, Identifier id){

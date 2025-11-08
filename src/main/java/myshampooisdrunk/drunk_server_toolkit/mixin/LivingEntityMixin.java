@@ -1,10 +1,7 @@
 package myshampooisdrunk.drunk_server_toolkit.mixin;
 
-import myshampooisdrunk.drunk_server_toolkit.DST;
-import myshampooisdrunk.drunk_server_toolkit.component.MultiblockData;
 import myshampooisdrunk.drunk_server_toolkit.item.CustomItemHelper;
-import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.AbstractMultiblockStructureEntity;
-import myshampooisdrunk.drunk_server_toolkit.multiblock.registry.MultiblockRegistry;
+import myshampooisdrunk.drunk_server_toolkit.world.MultiblockCacheI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -14,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import org.lwjgl.system.CallbackI;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,39 +20,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity{
-    @Inject(at=@At("HEAD"), method = "damage", cancellable = true)
-    public void injectMultiblockEntityDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir){
-        if(!getWorld().isClient()) {
-            String id;
-            MultiblockData data = this.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY);
-            if ((id = data.getEntityId()) != null) {
-                AbstractMultiblockStructureEntity<? extends Entity> structureEntity = MultiblockRegistry.ENTITY_TYPES.get(id).defaultEntity();
-                structureEntity.damage(world, source, amount, this, cir);
-            }
+    @Inject(at=@At("HEAD"), method="damage", cancellable = true)
+    private void injectMultiblockEntityDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
+            ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).damage(world, source, amount, cir);
         }
     }
 
-    @Inject(at=@At("HEAD"), method = "takeShieldHit", cancellable = true)
-    public void injectMultiblockEntityTakeShieldHit(ServerWorld world, LivingEntity attacker, CallbackInfo ci){
-        if(!getWorld().isClient()) {
-            String id;
-            MultiblockData data = this.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY);
-            if ((id = data.getEntityId()) != null) {
-                AbstractMultiblockStructureEntity<? extends Entity> structureEntity = MultiblockRegistry.ENTITY_TYPES.get(id).defaultEntity();
-                structureEntity.takeShieldHit(world, attacker, this, ci);
-            }
+    @Inject(at=@At("HEAD"), method="takeShieldHit", cancellable = true)
+    private void injectMultiblocktakeShieldHit(ServerWorld world, LivingEntity attacker, CallbackInfo ci) {
+        if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
+            ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).takeShieldHit(world, attacker, ci);
         }
     }
 
-    @Inject(at=@At("HEAD"), method = "tryUseDeathProtector", cancellable = true)//why the fuck did they call it a death protector so stupid smh my head smh
-    public void injectMultiblockEntityTryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> cir){
-        if(!getWorld().isClient()) {
-            String id;
-            MultiblockData data = this.getComponent(DST.ENTITY_MULTIBLOCK_DATA_COMPONENT_KEY);
-            if ((id = data.getEntityId()) != null) {
-                AbstractMultiblockStructureEntity<? extends Entity> structureEntity = MultiblockRegistry.ENTITY_TYPES.get(id).defaultEntity();
-                structureEntity.tryUseTotem(source, this, cir);
-            }
+    @Inject(method = "tryUseDeathProtector", at=@At("HEAD"), cancellable = true)
+    private void injectMultiblockEntityTryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+        if(getWorld().isClient()) return;
+        if(((MultiblockCacheI) getWorld()).drunk_server_toolkit$containsUuid(uuid)) {
+            ((MultiblockCacheI) getWorld()).drunk_server_toolkit$getMultiblockEntity(uuid).tryUseTotem(source, cir);
         }
     }
 

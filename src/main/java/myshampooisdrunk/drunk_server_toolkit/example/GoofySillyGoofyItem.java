@@ -38,25 +38,27 @@ public class GoofySillyGoofyItem extends AbstractCustomItem {
     }
 
     @Override
-    public void use(World world, PlayerEntity player, Hand hand, CallbackInfoReturnable cir) {
-        System.out.println("aaa");
-        if(!((CustomItemCooldownManagerI)player).drunk_server_toolkit$getCustomItemCooldownManager().isCoolingDown("cooldown1")){
-            ((CustomItemCooldownManagerI)player).drunk_server_toolkit$getCustomItemCooldownManager().set("cooldown1",100);
-            PlayerInventory inv = player.getInventory();
-            List<Integer> slots = new ArrayList<>(List.of(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35));
-            for(int s = 0; s < 36; s++){
-                int n = world.getRandom().nextBetweenExclusive(0,slots.size());
-                int s2 = slots.get(n);
-                ItemStack one = inv.getStack(s);
-                ItemStack two = inv.getStack(s2);
-                slots.remove(n);
-                inv.setStack(s,two);
-                inv.setStack(s2,one);
+    public void use(World world, LivingEntity entity, Hand hand, CallbackInfoReturnable cir) {
+        if(entity instanceof PlayerEntity player) {
+            System.out.println("aaa");
+            if (!((CustomItemCooldownManagerI) player).drunk_server_toolkit$getCustomItemCooldownManager().isCoolingDown("cooldown1")) {
+                ((CustomItemCooldownManagerI) player).drunk_server_toolkit$getCustomItemCooldownManager().set("cooldown1", 100);
+                PlayerInventory inv = player.getInventory();
+                List<Integer> slots = new ArrayList<>(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35));
+                for (int s = 0; s < 36; s++) {
+                    int n = world.getRandom().nextBetweenExclusive(0, slots.size());
+                    int s2 = slots.get(n);
+                    ItemStack one = inv.getStack(s);
+                    ItemStack two = inv.getStack(s2);
+                    slots.remove(n);
+                    inv.setStack(s, two);
+                    inv.setStack(s2, one);
+                }
+            } else {
+                player.sendMessage(Text.of(create().getName().getString() + " still has " +
+                        (int) (0.95 + ((CustomItemCooldownManagerI) player).drunk_server_toolkit$getCustomItemCooldownManager()
+                                .getCooldownProgress("cooldown1", 0) * 5f) + " second(s) left."), true);
             }
-        }else{
-            player.sendMessage(Text.of(create().getName().getString()+ " still has " +
-                    (int)(0.95+((CustomItemCooldownManagerI) player).drunk_server_toolkit$getCustomItemCooldownManager()
-                            .getCooldownProgress("cooldown1",0)*5f) + " second(s) left." ),true);
         }
     }
 

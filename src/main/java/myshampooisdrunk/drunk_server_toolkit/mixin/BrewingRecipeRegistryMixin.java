@@ -1,7 +1,7 @@
 package myshampooisdrunk.drunk_server_toolkit.mixin;
 
 import myshampooisdrunk.drunk_server_toolkit.recipe.potion.CustomBrewingRecipe;
-import myshampooisdrunk.drunk_server_toolkit.register.CustomBrewingRecipeRegistry;
+import myshampooisdrunk.drunk_server_toolkit.registry.CustomBrewingRecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import org.spongepowered.asm.mixin.Mixin;

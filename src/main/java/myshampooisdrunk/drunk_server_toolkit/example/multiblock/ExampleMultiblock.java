@@ -1,25 +1,54 @@
 package myshampooisdrunk.drunk_server_toolkit.example.multiblock;
 
 import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockCoreEntity;
+import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockEntity;
+import myshampooisdrunk.drunk_server_toolkit.multiblock.entity.MultiblockHitboxEntity;
+import myshampooisdrunk.drunk_server_toolkit.multiblock.hitbox.SolidHitboxGenerator;
+import myshampooisdrunk.drunk_server_toolkit.multiblock.registry.MultiblockRegistry;
 import myshampooisdrunk.drunk_server_toolkit.multiblock.structure.MultiblockStructure;
+import myshampooisdrunk.drunk_server_toolkit.multiblock.structure.MultiblockStructureType;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.Set;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 
 public class ExampleMultiblock extends MultiblockStructure {
-    public ExampleMultiblock(Identifier id) {
-        super(id, Set.of(Blocks.BLAST_FURNACE));
-        this.addBlock(0,-4,0, Blocks.SLIME_BLOCK);
-        this.addBlock(0,-3,0, Blocks.COBBLESTONE);
-        this.addBlock(0,-2,0, BlockTags.ACACIA_LOGS);
-        this.addBlock(0,-1,0, Blocks.DIAMOND_BLOCK);
-        this.attachEntity(2,2,2, new ExampleMultiblockEntity("examplemf"));
-        this.setCore(new MultiblockCoreEntity("core", Items.ACACIA_BOAT.getDefaultStack()));
-        // idea --> instead of registering the entity in a list, you register the entity type in a list
-        // save the entity type in ccapi nbt and use that entity type to detect which
+
+    public ExampleMultiblock(MultiblockStructureType<?> type, MultiblockCoreEntity core) {
+        super(type, core);
+    }
+
+    @Override
+    public boolean spawnStructure(BlockPos pos) {
+        boolean ret = super.spawnStructure(pos);
+        if(ret) {
+            ExampleMultiblockEntity ex = MultiblockRegistryExample.EXAMPLE_ENTITY.create(world);
+            assert ex != null;
+            MultiblockEntity.spawnEntity(ex, this, pos, new Vec3d(3, 3, 3));
+
+            MultiblockHitboxEntity.SolidHitboxEntity solid = MultiblockRegistry.SOLID_HITBOX_ENTITY.create(world);
+            assert solid != null;
+            MultiblockEntity.spawnEntity(solid, this, pos, new Vec3d(1.1, 1.1, 1.1));
+
+            MultiblockHitboxEntity.BlockHitboxEntity liquid = MultiblockRegistry.BLOCK_HITBOX_ENTITY.create(world);
+            assert liquid != null;
+            liquid.setBlock(Blocks.ACACIA_STAIRS.getDefaultState());
+            MultiblockEntity.spawnEntity(liquid, this, pos, new Vec3d(1.1, 1.1, 1.1));
+
+            SolidHitboxGenerator generator = new SolidHitboxGenerator.Builder().add(
+                    new Box(0,0,0,1,1,1), Blocks.GOLD_BLOCK.getDefaultState()
+            ).add(new Box(0,0,0,-1.2,2,2),Blocks.EMERALD_BLOCK.getDefaultState()).add(
+                    new Box(2,2,2,3,3,3), Blocks.DIAMOND_BLOCK.getDefaultState()).add(
+                    new Box(2,2,2,1.8,4,4), Blocks.NETHERITE_BLOCK.getDefaultState()
+            ).build();
+
+            generator.get(world, new Vec3d(0.8,-5,3)).forEach((vec, ents) -> {
+                for (MultiblockHitboxEntity<?, ?> e : ents) {
+                    MultiblockEntity.spawnEntity(e, this, pos, vec);
+                }
+            });
+        }
+
+        return ret;
     }
 }

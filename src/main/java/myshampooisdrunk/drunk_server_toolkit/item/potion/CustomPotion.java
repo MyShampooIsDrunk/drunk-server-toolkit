@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either;
 import myshampooisdrunk.drunk_server_toolkit.DST;
 import myshampooisdrunk.drunk_server_toolkit.recipe.CustomIngredient;
 import myshampooisdrunk.drunk_server_toolkit.recipe.potion.CustomBrewingRecipe;
-import myshampooisdrunk.drunk_server_toolkit.register.CustomBrewingRecipeRegistry;
+import myshampooisdrunk.drunk_server_toolkit.registry.CustomBrewingRecipeRegistry;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;

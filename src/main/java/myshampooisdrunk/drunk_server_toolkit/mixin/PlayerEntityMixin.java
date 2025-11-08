@@ -22,29 +22,32 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
-    PlayerEntity user = (PlayerEntity)(Object)this;
+
     @Inject(at=@At("HEAD"),method="attack", cancellable = true)
     private void attack(Entity target, CallbackInfo ci) {
-        ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
+        ItemStack item = this.getStackInHand(Hand.MAIN_HAND);
         CustomItemHelper.getCustomItem(item).ifPresent(custom -> {
             custom.postHit(item, target, this, ci);
         });
     }
+
     @Inject(at=@At("HEAD"),method="dropItem")
     private void dropItem(ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
-        CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postDrop(user, stack, retainOwnership, cir));
+        CustomItemHelper.getCustomItem(stack).ifPresent(custom -> custom.postDrop(this, stack, retainOwnership, cir));
     }
+
     @Inject(at=@At("HEAD"),method="tick", cancellable = true)
     public void whileSneaking(CallbackInfo ci){
         if(this.isSneaking()){
-            ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
+            ItemStack item = this.getStackInHand(Hand.MAIN_HAND);
             CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.whileSneak((PlayerEntity) (Object) this, ci));
         }
     }
+
     @Inject(at=@At("HEAD"),method="interact", cancellable = true)
     public void onInteract(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
-        ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
-        CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onEntityInteraction(user,entity,hand,cir));
+        ItemStack item = this.getStackInHand(Hand.MAIN_HAND);
+        CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onEntityInteraction(this,entity,hand,cir));
     }
 
 }

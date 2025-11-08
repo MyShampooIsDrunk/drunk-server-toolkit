@@ -1,41 +1,24 @@
 package myshampooisdrunk.drunk_server_toolkit.component;
 
 import myshampooisdrunk.drunk_server_toolkit.multiblock.structure.MultiblockStructure;
-import net.minecraft.block.Block;
+import myshampooisdrunk.drunk_server_toolkit.multiblock.structure.MultiblockStructureType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.MarkerEntity;
 import net.minecraft.entity.decoration.DisplayEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-public class ItemDisplayEntityMultiblockCoreData implements MultiblockCoreData{
+public class MarkerMultiblockCoreData implements MultiblockCoreData{
     private final Map<BlockPos, BlockState> initialStates;
-    private final World world;
-    public ItemDisplayEntityMultiblockCoreData(DisplayEntity.ItemDisplayEntity e){
-        initialStates = new HashMap<>();
-        world = e.getWorld();
-    }
+    private MultiblockStructureType<?> type;
 
-    @Override
-    public void setBlockstateData(Map<BlockPos, BlockState> data) {
-        initialStates.clear();
-        initialStates.putAll(data);
+    public MarkerMultiblockCoreData(MarkerEntity e){
+        initialStates = new HashMap<>();
     }
 
     @Override
@@ -45,20 +28,34 @@ public class ItemDisplayEntityMultiblockCoreData implements MultiblockCoreData{
             BlockState state = block.read("block",BlockState.CODEC).orElseThrow();
             initialStates.put(pos, state);
         }
+
+        readView.read("structure_type", MultiblockStructureType.TYPE_CODEC).ifPresent(t -> type = t);
     }
 
     @Override
     public void writeData(WriteView writeView) {
-
         WriteView.ListView list = writeView.getList("blocks");
         initialStates.forEach((pos, state) -> {
             WriteView pair = list.add();
             pair.put("pos", BlockPos.CODEC, pos);
             pair.put("block", BlockState.CODEC, state);
         });
+
+        if(type != null) writeView.put("structure_type", MultiblockStructureType.TYPE_CODEC, type);
     }
 
     public Map<BlockPos, BlockState> getBlockstateData() {
         return initialStates;
+    }
+
+    @Override
+    public void initialize(MultiblockStructure structure) {
+        type = structure.getType();
+        initialStates.putAll(structure.getStructureBlocks());
+    }
+
+    @Override
+    public MultiblockStructureType<?> getStructureType() {
+        return type;
     }
 }

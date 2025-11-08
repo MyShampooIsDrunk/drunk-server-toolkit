@@ -1,6 +1,7 @@
 package myshampooisdrunk.drunk_server_toolkit.example;
 
 import myshampooisdrunk.drunk_server_toolkit.item.AbstractCustomItem;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
@@ -14,7 +15,7 @@ public class HopefullyThisItemWorks extends AbstractCustomItem {
     }
 
     @Override
-    public void use(World world, PlayerEntity player, Hand hand, CallbackInfoReturnable cir) {
-        player.attack(player);
+    public void use(World world, LivingEntity entity, Hand hand, CallbackInfoReturnable cir) {
+        if(entity instanceof PlayerEntity p) p.attack(p);
     }
 }
