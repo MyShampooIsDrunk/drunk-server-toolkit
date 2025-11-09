@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(ArmorStandEntity.class)
 public interface ArmorStandEntityInvoker {
     @Invoker
-    public void invokeSetMarker(boolean marker);
+    void invokeSetMarker(boolean marker);
 }

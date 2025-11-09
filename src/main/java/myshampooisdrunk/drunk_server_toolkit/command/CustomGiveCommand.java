@@ -108,7 +108,7 @@ public class CustomGiveCommand {
                                 itemEntity.setDespawnImmediately();
                             }
 
-                            serverPlayerEntity.getWorld().playSound((PlayerEntity)null, serverPlayerEntity.getX(), serverPlayerEntity.getY(), serverPlayerEntity.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((serverPlayerEntity.getRandom().nextFloat() - serverPlayerEntity.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            serverPlayerEntity.getEntityWorld().playSound((PlayerEntity)null, serverPlayerEntity.getX(), serverPlayerEntity.getY(), serverPlayerEntity.getZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((serverPlayerEntity.getRandom().nextFloat() - serverPlayerEntity.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
                             serverPlayerEntity.currentScreenHandler.sendContentUpdates();
                         } else {
                             itemEntity = serverPlayerEntity.dropItem(itemStack2, false);

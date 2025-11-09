@@ -97,19 +97,25 @@ public abstract class AbstractCustomItem{
 
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, EquipmentSlot slot, CallbackInfo ci) {
     }
+
     public void onCraft(ItemStack stack, World world, CallbackInfo ci) {
     }
+
     public void onCraftByPlayer(ItemStack stack, PlayerEntity player, CallbackInfo ci) {
     }
+
     public int getMaxUseTime(ItemStack stack, LivingEntity entity) {
         ConsumableComponent consumableComponent = stack.get(DataComponentTypes.CONSUMABLE);
         return consumableComponent != null ? consumableComponent.getConsumeTicks() : 0;
     }
+
     public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
     }
+
     public boolean isUsedOnRelease(ItemStack stack) {
         return false;
     }
+
     public void postHit(ItemStack stack, Entity target, LivingEntity attacker, CallbackInfo ci) {
     }
 
@@ -129,32 +135,41 @@ public abstract class AbstractCustomItem{
 //    }
     public void onSneak(boolean sneaking, PlayerEntity player, CallbackInfo ci){
     }
+
     public void whileSneak(PlayerEntity p, CallbackInfo ci){
     }
+
     public void onJump(PlayerEntity p, CallbackInfo ci){
     }
+
     //cir is here in case you don't wanna override normal right click
     public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir) {
 //        FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
 //        cir.setReturnValue(foodComponent != null ? user.eatFood(world, stack, foodComponent) : stack);
     }
+
     public void use(World world, LivingEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
     }
+
     public void useOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
         cir.setReturnValue(ActionResult.PASS);
     }
+
     public void onEntityInteraction(LivingEntity user, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
     }
-    public void postProcessComponents(ItemStack stack, CallbackInfo ci) {
-    }
+
     public void onItemEntityDestroyed(ItemEntity entity, CallbackInfo ci) {
     }
+
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks, CallbackInfo ci) {
     }
+
     public void postDrop(LivingEntity user, ItemStack stack, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir){
     }
+
     public void postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfo ci) {
     }
+
     //should be run in the initializer of a new custom item if you want custom item attributes and shit
     protected <T> void addComponent(ComponentType<T> type, T val){
         components.add(type, val);

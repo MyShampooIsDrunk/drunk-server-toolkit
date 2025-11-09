@@ -113,7 +113,7 @@ public abstract class MultiblockHitboxEntity<E extends Entity, T extends Multibl
             rider.refreshPositionAndAngles(center,0,0);
             rider.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, -1, 0, false, false));
             rider.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, -1, 5, false, false));
-            rider.startRiding(entity, true);
+            rider.startRiding(entity, true, false);
 
             return entity;
         }

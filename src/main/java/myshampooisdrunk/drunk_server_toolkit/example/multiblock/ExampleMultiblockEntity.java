@@ -45,7 +45,7 @@ public class ExampleMultiblockEntity extends MultiblockEntity<WardenEntity, Exam
     public void onStruckByLightning(ServerWorld world, LightningEntity lightning, CallbackInfo ci) {
         super.onStruckByLightning(world, lightning, ci);
         Consumer<TntEntity> c = (tnt) -> {
-            tnt.refreshPositionAndAngles(this.getEntity().getPos().add(0,50,0),0 ,0);
+            tnt.refreshPositionAndAngles(this.getEntity().getEntityPos().add(0,50,0),0 ,0);
             tnt.setVelocity(0,-3,0);
         };
         world.spawnEntity(EntityType.TNT.create(world, c, entity.getBlockPos(), SpawnReason.MOB_SUMMONED, false, false));

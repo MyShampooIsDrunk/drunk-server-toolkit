@@ -38,7 +38,7 @@ public class MultiblockEntityType<E extends Entity, T extends MultiblockEntity<E
     }
 
     public T createFromEntity(E entity) {
-        T ret = this.factory.create(this, entity.getWorld(), entity);
+        T ret = this.factory.create(this, entity.getEntityWorld(), entity);
         if(ret == null) {
             DST.LOGGER.warn("ATTEMPTED INITIALIZING NULL MULTIBLOCK ENTITY WITH UUID {} AND TYPE {}", entity.getUuid(), getId(this));
             return null;

@@ -36,8 +36,8 @@
       "drunk_server_toolkit.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": ["1.21.6","~1.21.7"],
+		"fabricloader": ">=0.17.3",
+		"minecraft": ["~1.21.9"],
 		"java": ">=21",
 		"fabric-api": "*"
 	},

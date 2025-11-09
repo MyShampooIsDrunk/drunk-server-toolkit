@@ -49,7 +49,7 @@ public class MultiblockStructureType<T extends MultiblockStructure> {
 
     public T loadFromCore(MarkerEntity core) {
         T ret;
-        MultiblockCacheI cache = (MultiblockCacheI) core.getWorld();
+        MultiblockCacheI cache = (MultiblockCacheI) core.getEntityWorld();
         if(cache.drunk_server_toolkit$containsUuid(core.getUuid())) {
             MultiblockCoreEntity c = cache.drunk_server_toolkit$getMultiblockEntity(core.getUuid());
             ret = factory.create(this, c);

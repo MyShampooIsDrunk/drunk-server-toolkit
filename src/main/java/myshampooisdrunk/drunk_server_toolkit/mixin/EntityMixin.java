@@ -27,10 +27,9 @@ import java.util.UUID;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
-    @Shadow public abstract World getWorld();
-
     @Shadow protected UUID uuid;
 
+    @Shadow private World world;
     Entity e = (Entity)(Object) this;
 
     @Inject(at=@At("HEAD"),method = "setSneaking", cancellable = true)
@@ -43,7 +42,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "interact", cancellable = true)
     public void injectMultiblockEntityInteract(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir){
-        World world = getWorld();
         if(!world.isClient()){// note that you interact with each hand once so 1 right click -> 1 offhand + 1 main hand interaction
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).onInteract(player, hand, cir);
@@ -53,7 +51,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "tick", cancellable = true)
     public void injectMultiblockEntityTick(CallbackInfo ci){
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).tick(ci);
@@ -63,7 +60,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "onPlayerCollision", cancellable = true)
     public void injectMultiblockEntityCollision(PlayerEntity player, CallbackInfo ci){
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).onPlayerCollision(player, ci);
@@ -73,7 +69,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "onDamaged", cancellable = true)
     public void injectMultiblockEntityOnDamaged(DamageSource damageSource, CallbackInfo ci){
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).onDamaged(damageSource, ci);
@@ -83,7 +78,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "onBlockCollision", cancellable = true)
     public void injectMultiblockEntityBlockCollision(BlockState state, CallbackInfo ci){
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).onBlockCollision(state, ci);
@@ -93,7 +87,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "remove")
     public void injectMultiblockEntityRemove(Entity.RemovalReason reason, CallbackInfo ci) {
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).onRemoved(reason, ci);
@@ -110,7 +103,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "handleAttack", cancellable = true)
     public void injectMultiblockEntityHandleAttack(Entity attacker, CallbackInfoReturnable<Boolean> cir){
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).handleAttack(attacker, cir);
@@ -120,7 +112,6 @@ public abstract class EntityMixin {
 
     @Inject(at=@At("HEAD"), method = "interactAt", cancellable = true)
     public void injectMultiblockEntityInteractAt(PlayerEntity player, Vec3d hitPos, Hand hand, CallbackInfoReturnable<ActionResult> cir){
-        World world = getWorld();
         if(!world.isClient()){
             if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
                 ((MultiblockCacheI) world).drunk_server_toolkit$getMultiblockEntity(uuid).interactAt(player, hitPos, hand, cir);

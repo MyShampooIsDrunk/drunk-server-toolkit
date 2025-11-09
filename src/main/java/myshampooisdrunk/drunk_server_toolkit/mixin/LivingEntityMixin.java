@@ -36,9 +36,9 @@ public abstract class LivingEntityMixin extends Entity{
 
     @Inject(method = "tryUseDeathProtector", at=@At("HEAD"), cancellable = true)
     private void injectMultiblockEntityTryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
-        if(getWorld().isClient()) return;
-        if(((MultiblockCacheI) getWorld()).drunk_server_toolkit$containsUuid(uuid)) {
-            ((MultiblockCacheI) getWorld()).drunk_server_toolkit$getMultiblockEntity(uuid).tryUseTotem(source, cir);
+        if(getEntityWorld().isClient()) return;
+        if(((MultiblockCacheI) getEntityWorld()).drunk_server_toolkit$containsUuid(uuid)) {
+            ((MultiblockCacheI) getEntityWorld()).drunk_server_toolkit$getMultiblockEntity(uuid).tryUseTotem(source, cir);
         }
     }
 
