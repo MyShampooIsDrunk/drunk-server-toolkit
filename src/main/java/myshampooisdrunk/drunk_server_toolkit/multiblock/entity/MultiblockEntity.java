@@ -33,11 +33,11 @@ public abstract class MultiblockEntity<E extends Entity, T extends MultiblockEnt
     protected UUID coreUuid;
     protected final E entity;
 
-//    public MultiblockEntity(MultiblockEntityType<E, T> type, World world) {
-//        this.type = type;
-//        this.world = world;
-//        this.entity = type.getEntityType().create(world, SpawnReason.MOB_SUMMONED);
-//    }
+    public MultiblockEntity(MultiblockEntityType<E, T> type, World world) {
+        this.type = type;
+        this.world = world;
+        this.entity = type.getEntityType().create(world, SpawnReason.MOB_SUMMONED);
+    }
 
     public MultiblockEntity(MultiblockEntityType<E, T> type, World world, E entity) {
         this.entity = entity == null ? type.getEntityType().create(world, SpawnReason.MOB_SUMMONED) : entity;
@@ -127,24 +127,17 @@ public abstract class MultiblockEntity<E extends Entity, T extends MultiblockEnt
         return entity;
     }
 
-    protected static double getOriginY(WorldView world, Vec3d pos, Box boundingBox) {
-        Box box = new Box(pos.subtract(0.5), pos.add(0.5));
-
-        Iterable<VoxelShape> iterable = world.getCollisions(null, box);
-        return 1.0 + VoxelShapes.calculateMaxOffset(Direction.Axis.Y, boundingBox, iterable, -1.0);
-    }
-
     public void onInteract(PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir){
     }
 
     public void onPlayerCollision(PlayerEntity player, CallbackInfo ci) {
     }
 
-    //this will be called by the mixin
-    //to implement custom tick code, you should override
-    //super.tick(me, ci) if you want to cancel entity.tick() but not entity.baseTick()
-    //tick(true, me, ci) if you want to cancel entity.tick() and entity.baseTick()
-    //   alternatively just use ci.cancel()
+    ///<p>this will be called by the mixin</p>
+    ///<p>to implement custom tick code, you should override</p>
+    ///<p>super.tick(me, ci) if you want to cancel entity.tick() but not entity.baseTick()</p>
+    ///<p>tick(true, me, ci) if you want to cancel entity.tick() and entity.baseTick()</p>
+    ///   <p>alternatively just use ci.cancel()</p>
     public void tick(CallbackInfo ci) {
         tick(false, ci);
     }
