@@ -24,10 +24,7 @@ public abstract class ItemMixin{
 	@Inject(at = @At("HEAD"), method = "use",cancellable = true)
 	private void useItem(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
 		ItemStack item = user.getStackInHand(hand);
-		CustomItemHelper.getCustomItem(item).ifPresent(custom -> {
-			System.out.println("finding not the problem");
-			custom.use(world, user, hand, cir);
-		});
+		CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.use(world, user, hand, cir));
 	}
 
 	@Inject(at=@At("HEAD"),method = "onStoppedUsing", cancellable = true)
