@@ -11,8 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.CallbackI;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,6 +22,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity{
+    @Shadow public abstract @Nullable ItemStack getBlockingItem();
+
     @Inject(at=@At("HEAD"), method="damage", cancellable = true)
     private void injectMultiblockEntityDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if(((MultiblockCacheI) world).drunk_server_toolkit$containsUuid(uuid)) {
@@ -48,6 +52,12 @@ public abstract class LivingEntityMixin extends Entity{
             ItemStack item = user.getStackInHand(Hand.MAIN_HAND);
             CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onJump(user,ci));
         }
+    }
+
+    @Inject(method = "takeShieldHit", at = @At("HEAD"))
+    public void injectItemTakeShieldHit(ServerWorld world, LivingEntity attacker, CallbackInfo ci) {
+        ItemStack item = getBlockingItem();
+        CustomItemHelper.getCustomItem(item).ifPresent(custom -> custom.onTakeShieldHit(world, attacker, (LivingEntity)(Object)this, ci));
     }
 
     public LivingEntityMixin(EntityType<?> type, World world) {super(type, world);}

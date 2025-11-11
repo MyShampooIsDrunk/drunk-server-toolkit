@@ -158,6 +158,9 @@ public abstract class AbstractCustomItem{
     public void onEntityInteraction(LivingEntity user, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir){
     }
 
+    public void onTakeShieldHit(ServerWorld world, LivingEntity attacker, LivingEntity user, CallbackInfo ci) {
+    }
+
     public void onItemEntityDestroyed(ItemEntity entity, CallbackInfo ci) {
     }
 
