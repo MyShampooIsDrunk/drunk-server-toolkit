@@ -26,12 +26,12 @@ public class Util {
         return init;
     }
 
-    public <T> T echo(T t) {
+    public static <T> T echo(T t) {
         System.out.println(t);
         return t;
     }
 
-    public <T> T echo(T t, Function<T, String> message) {
+    public static <T> T echo(T t, Function<T, String> message) {
         System.out.println(message.apply(t));
         return t;
     }

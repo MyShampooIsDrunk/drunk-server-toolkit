@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public class CustomItemHelper {
     public static Optional<AbstractCustomItem> getCustomItem(ItemStack stack){
+        if(stack == null || stack.isEmpty()) return Optional.empty();
         for(AbstractCustomItem custom : DST.ITEMS){
             if(stack.isOf(custom.getItem()) && stack.contains(DataComponentTypes.CUSTOM_DATA) &&
                     Objects.requireNonNull(stack.get(DataComponentTypes.CUSTOM_DATA)).copyNbt().contains("custom_item") &&

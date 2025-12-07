@@ -64,7 +64,7 @@ public abstract class MultiblockHitboxEntity<E extends Entity, T extends Multibl
 
         @Override
         public DisplayEntity.BlockDisplayEntity create(MultiblockStructure structure, BlockPos center, Vec3d relative, SpawnReason reason) {
-            DST.LOGGER.info("created a block display ts vro");
+//            DST.LOGGER.info("created a block display ts vro");
             return super.create(structure, center, relative, reason);
         }
     }
