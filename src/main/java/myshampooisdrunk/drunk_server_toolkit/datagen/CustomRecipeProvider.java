@@ -10,6 +10,7 @@ import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,7 +20,7 @@ public class CustomRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    public RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup wrapperLookup, RecipeExporter exporter) {
+    public @NotNull RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup wrapperLookup, RecipeExporter exporter) {
         return new CustomRecipeGenerator(wrapperLookup, exporter);
     }
 

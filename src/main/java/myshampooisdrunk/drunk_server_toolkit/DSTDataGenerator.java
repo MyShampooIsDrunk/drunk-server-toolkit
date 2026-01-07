@@ -2,10 +2,11 @@ package myshampooisdrunk.drunk_server_toolkit;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import org.jetbrains.annotations.NotNull;
 
 public class DSTDataGenerator implements DataGeneratorEntrypoint {
 	@Override
-	public void onInitializeDataGenerator(FabricDataGenerator gen) {
+	public void onInitializeDataGenerator(@NotNull FabricDataGenerator gen) {
 		initializeDataGen(gen);
 	}
 

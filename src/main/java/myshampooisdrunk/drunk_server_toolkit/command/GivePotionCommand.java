@@ -1,5 +1,6 @@
 package myshampooisdrunk.drunk_server_toolkit.command;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -37,7 +38,7 @@ public class GivePotionCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
                 (LiteralArgumentBuilder)((LiteralArgumentBuilder) CommandManager.literal("give_potion")
-                        .requires(source -> source.hasPermissionLevel(2)))
+                        .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK)))
                         .then(CommandManager.argument("targets", EntityArgumentType.entities())
                                 .then((CommandManager
                                         .argument("potion", IdentifierArgumentType.identifier())

@@ -42,19 +42,19 @@ public class CustomGiveCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
                 (LiteralArgumentBuilder)((LiteralArgumentBuilder) CommandManager.literal("give_custom")
-                        .requires(source -> source.hasPermissionLevel(2)))
+                        .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK)))
                         .then(CommandManager.argument("targets", EntityArgumentType.entities())
                                 .then((ArgumentBuilder<ServerCommandSource, ?>)((RequiredArgumentBuilder)CommandManager
                                         .argument("custom_item", IdentifierArgumentType.identifier())
                                         .suggests(SUGGESTION_PROVIDER)
                                         .executes(context -> execute(
-                                                (ServerCommandSource)context.getSource(),
+                                                context.getSource(),
                                                 EntityArgumentType.getPlayers(context, "targets"),
                                                 IdentifierArgumentType.getIdentifier(context, "custom_item"), 1)
                                         ))
                                         .then(CommandManager.argument("count", IntegerArgumentType.integer(0))
                                                 .executes(context -> execute(
-                                                        (ServerCommandSource)context.getSource(),
+                                                        context.getSource(),
                                                         EntityArgumentType.getPlayers(context, "targets"),
                                                         IdentifierArgumentType.getIdentifier(context, "custom_item"),
                                                         IntegerArgumentType.getInteger(context, "count")
@@ -75,15 +75,16 @@ public class CustomGiveCommand {
         }
         if(item == null){
             source.sendError(Text.of("Item " + id + " doesn't exist"));
+            return 0;
         }
         int i = item.create().getMaxCount();
         int j = i * 100;
         ItemStack itemStack = item.create().copyWithCount(count);
         if (count > j) {
-            source.sendError(Text.translatable("commands.give.failed.toomanyitems", new Object[]{j, itemStack.toHoverableText()}));
+            source.sendError(Text.translatable("commands.give.failed.toomanyitems", j, itemStack.toHoverableText()));
             return 0;
         } else {
-            Iterator var7 = targets.iterator();
+            Iterator<ServerPlayerEntity> var7 = targets.iterator();
 
             label44:
             while(var7.hasNext()) {

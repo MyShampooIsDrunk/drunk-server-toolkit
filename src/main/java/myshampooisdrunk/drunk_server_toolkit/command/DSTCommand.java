@@ -24,7 +24,7 @@ public class DSTCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("dst")
-                .requires(CommandManager.requirePermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK))
                 .then(CommandManager.literal("structures")
                         .executes(context -> executeStructures(context.getSource()))
                         .then(CommandManager.argument("target", EntityArgumentType.entity())
